@@ -19,9 +19,6 @@ public:
 
 	GLFWwindow* get_window() { return _window; }
 	
-	const int window_width = 16 * 64;
-	const int window_height = 9 * 64;
-
 private:
 	float last_frame_time = 0;
 	GLFWwindow* _window = nullptr;

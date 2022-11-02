@@ -9,33 +9,38 @@ int Engine::initialize() {
 	if (glfwInit() == -1)
 		return -1;
 
+	GLFWmonitor* monitor = glfwGetPrimaryMonitor(); // TODO: Handle no monitors error
+	const GLFWvidmode* vidmode = glfwGetVideoMode(monitor);
+
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_RESIZABLE, false);
+	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+	glfwWindowHint(GLFW_REFRESH_RATE, vidmode->refreshRate);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	
-	
-	_window = glfwCreateWindow(window_width, window_height, "Undertale", nullptr, nullptr);
+	_window = glfwCreateWindow(vidmode->width, vidmode->height, "Undertale", glfwGetPrimaryMonitor(), nullptr);
 	if (!_window) {
 		std::cout << "Failed to create glfw window." << std::endl;
 		glfwTerminate();
 		return -1;
 	}
-
+	
 	glfwMakeContextCurrent(_window);
 
 	gladLoadGL();
 
-	glViewport(0, 0, window_width, window_height);
+	int width, height;
+	glfwGetFramebufferSize(_window, &width, &height);
+	glViewport(0, 0, width, height);
 
 	return 0;
 }
 
 void Engine::main_loop() {
 	while (!should_close()) {
-		handle_input();
 		update();
 		draw();
+		handle_input();
 	}
 }
 
