@@ -21,8 +21,22 @@
     <ClCompile Include="libs\src\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\main\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\undertale.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main\engine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="libs.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\main\engine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
