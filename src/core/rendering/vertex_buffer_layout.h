@@ -30,15 +30,7 @@ public:
 	VertexBufferLayout()
 		: _stride(0) {}
 
-	template<typename T>
-	void push(unsigned int count) {
-		//static_assert(false);
-	}
-
-	void push(unsigned int type, unsigned int count) {
-		_elements.push_back({ type, count, GL_FALSE });
-		_stride += count * VertexBufferElement::get_size_of_type(type);
-	}
+	void push(unsigned int type, unsigned int count);
 	
 	inline const std::vector<VertexBufferElement> get_elements() const& { return _elements; }
 	inline unsigned int get_stride() const { return _stride; }
