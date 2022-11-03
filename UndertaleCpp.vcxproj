@@ -139,18 +139,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\core\rendering\renderer.cpp" />
+    <ClCompile Include="src\core\rendering\shader.cpp" />
     <ClCompile Include="src\core\rendering\index_buffer.cpp" />
     <ClCompile Include="src\engine.cpp" />
     <ClCompile Include="src\utility\open_gl_handler.cpp" />
     <ClCompile Include="src\core\rendering\vertex_buffer.cpp" />
+    <ClCompile Include="src\core\rendering\vertex_array.cpp" />
+    <ClCompile Include="src\core\rendering\vertex_buffer_layout.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\basic.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\core\rendering\renderer.h" />
+    <ClInclude Include="src\core\rendering\shader.h" />
     <ClInclude Include="src\core\rendering\index_buffer.h" />
     <ClInclude Include="src\utility\open_gl_handler.h" />
     <ClInclude Include="src\core\rendering\vertex_buffer.h" />
+    <ClInclude Include="src\core\rendering\vertex_array.h" />
+    <ClInclude Include="src\core\rendering\vertex_buffer_layout.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
