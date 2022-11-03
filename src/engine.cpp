@@ -2,6 +2,9 @@
 #include <gl/glew.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_glfw.h>
+#include <imgui/imgui_impl_opengl3.h>
 
 #include "utility/open_gl_handler.h"
 #include "core/rendering/vertex_buffer.h"
@@ -36,6 +39,20 @@ int main(void) {
 
     glfwSwapInterval(1);
 
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+    //ImGui::StyleColorsClassic();
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 330");
+
     if (glewInit() != GLEW_OK)
         std::cout << "Error on glew initialization!" << std::endl;
 
@@ -68,11 +85,6 @@ int main(void) {
 
         glm::mat4 proj = glm::ortho(0.0f, float(window_width), 0.0f, float(window_height), -1.0f, 1.0f);
         glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(float(window_width)*0.5f, float(window_height)*0.5f, 0.0f));
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(100.0f, -50.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(200.0f, 200.0f, 0.0f));
-        
-
-        glm::mat4 mvp = proj * view * model;
 
         Shader shader("res/shaders/basic.shader");
         shader.bind();
@@ -80,7 +92,6 @@ int main(void) {
         Texture texture("res/textures/hearth.png");
         texture.bind(0);
         shader.set_uniform1i("u_Texture", 0);
-        shader.set_uniform_mat4f("u_MVP", mvp);
 
         va.unbind();
         vb.unbind();
@@ -88,23 +99,55 @@ int main(void) {
         shader.unbind();
         texture.unbind();
 
+
         Renderer renderer;
+
+        glm::vec2 translation(0.0f);
+        glm::vec2 scale(200.0f);
+        float rotation(0);
 
         while (!glfwWindowShouldClose(window)) {
             renderer.clear();
 
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+
+
+            {
+                ImGui::Begin("Properties");
+                ImGui::SliderFloat2("Translation", &translation.x, -float(window_width)*0.5f, float(window_width) * 0.5f);
+                ImGui::SliderFloat2("Scale", &scale.x, 0.0f, 300.0f);
+                ImGui::SliderFloat("Rotation", &rotation, 0.0f, 360.0f);
+
+                ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+                ImGui::End();
+            }
+            
             shader.bind();
             texture.bind(0);
             float time = float(glfwGetTime());
             shader.set_uniform4f("u_Color", 0.5f + sinf(time) * 0.5f, 0.5f + cosf(time) * 0.5f, 0.5f + sinf(time * 3.14f) * 0.5f, 1.0f);
+            glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(translation, 0.0f));
+            model = glm::scale(model, glm::vec3(scale, 0.0f));
+            model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+            glm::mat4 mvp = proj * view * model;
+            shader.set_uniform_mat4f("u_MVP", mvp);
 
             renderer.draw(va, ib, shader);
             
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
             glfwSwapBuffers(window);
 
             glfwPollEvents();
         }
     }
+
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
     glfwTerminate();
     return 0;
