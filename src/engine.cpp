@@ -1,5 +1,7 @@
 #include <GLFW/glfw3.h>
 #include <gl/glew.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "utility/open_gl_handler.h"
 #include "core/rendering/vertex_buffer.h"
@@ -11,6 +13,8 @@
 #include "core/rendering/texture.h"
 
 int main(void) {
+    int window_width = 16 * 64;
+    int window_height = 9 * 64;
     GLFWwindow* window;
 
     if (!glfwInit())
@@ -22,7 +26,7 @@ int main(void) {
 
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-    window = glfwCreateWindow(16*64, 9*64, "Undertale", NULL, NULL);
+    window = glfwCreateWindow(window_width, window_height, "Undertale", NULL, NULL);
     if (!window) {
         glfwTerminate();
         return -1;
@@ -53,10 +57,6 @@ int main(void) {
             2, 3, 0
         };
 
-        unsigned int vao;
-        GL_CALL(glGenVertexArrays(1, &vao));
-        GL_CALL(glBindVertexArray(vao));
-
         VertexArray va;
         VertexBuffer vb(positions, 16 * sizeof(float));
         VertexBufferLayout layout;
@@ -66,12 +66,21 @@ int main(void) {
 
         IndexBuffer ib(indices, 6);
 
+        glm::mat4 proj = glm::ortho(0.0f, float(window_width), 0.0f, float(window_height), -1.0f, 1.0f);
+        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(float(window_width)*0.5f, float(window_height)*0.5f, 0.0f));
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(100.0f, -50.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(200.0f, 200.0f, 0.0f));
+        
+
+        glm::mat4 mvp = proj * view * model;
+
         Shader shader("res/shaders/basic.shader");
         shader.bind();
 
         Texture texture("res/textures/hearth.png");
         texture.bind(0);
         shader.set_uniform1i("u_Texture", 0);
+        shader.set_uniform_mat4f("u_MVP", mvp);
 
         va.unbind();
         vb.unbind();
