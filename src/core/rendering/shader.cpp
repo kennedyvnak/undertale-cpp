@@ -33,7 +33,7 @@ int Shader::get_uniform_location(const std::string& name) {
     }
 
     GL_CALL(int location = glGetUniformLocation(_id, name.c_str()));
-    ASSERT(location != 1);
+    ASSERT(location != -1);
     _uniform_location_cache[name] = location;
     return location;
 }
