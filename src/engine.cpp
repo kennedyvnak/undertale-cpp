@@ -7,6 +7,7 @@
 #include "core/rendering/vertex_array.h"
 #include "core/rendering/vertex_buffer_layout.h"
 #include "core/rendering/shader.h"
+#include "core/rendering/renderer.h"
 
 int main(void) {
     GLFWwindow* window;
@@ -70,20 +71,17 @@ int main(void) {
         ib.unbind();
         shader.unbind();
 
-        while (!glfwWindowShouldClose(window)) {
-            GL_CALL(glClearColor(0.07f, 0.13f, 0.17f, 1.0f));
-            GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
+        Renderer renderer;
 
-            float time = float(glfwGetTime());
+        while (!glfwWindowShouldClose(window)) {
+            renderer.clear();
 
             shader.bind();
+            float time = float(glfwGetTime());
             shader.set_uniform4f("u_Color", 0.5f + sinf(time) * 0.5f, 0.5f + cosf(time) * 0.5f, 0.5f + sinf(time * 3.14f) * 0.5f, 1.0f);
 
-            va.bind();
-            ib.bind();
-
-            GL_CALL(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
-
+            renderer.draw(va, ib, shader);
+            
             glfwSwapBuffers(window);
 
             glfwPollEvents();
