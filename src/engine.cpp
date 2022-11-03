@@ -102,19 +102,20 @@ static unsigned int create_shader(const std::string& vert_shader_source, const s
 int main(void) {
     GLFWwindow* window;
 
-    /* Initialize the library */
     if (!glfwInit())
         return -1;
 
-    /* Create a windowed mode window and its OpenGL context */
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
     window = glfwCreateWindow(16*64, 9*64, "Undertale", NULL, NULL);
     if (!window) {
         glfwTerminate();
         return -1;
     }
 
-    /* Make the window's context current */
     glfwMakeContextCurrent(window);
+
+    glfwSwapInterval(1);
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
@@ -153,10 +154,16 @@ int main(void) {
     unsigned int shader = create_shader(source.vertex_source, source.fragment_source);
     GL_CALL(glUseProgram(shader));
 
+    GL_CALL(int location = glGetUniformLocation(shader, "u_Color"));
+    ASSERT(location != -1);
+
     while (!glfwWindowShouldClose(window)) {
         GL_CALL(glClearColor(0.07f, 0.13f, 0.17f, 1.0f));
         GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
 
+        float time = float(glfwGetTime());
+
+        GL_CALL(glUniform4f(location, 0.5f + sinf(time) * 0.5f, 0.5f + cosf(time) * 0.5f, 0.5f + sinf(time * 3.14) * 0.5f, 1.0f));
         GL_CALL(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
         glfwSwapBuffers(window);
