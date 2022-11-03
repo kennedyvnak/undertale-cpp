@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="libs\include\stb\stb_image.cpp" />
     <ClCompile Include="src\core\rendering\renderer.cpp" />
     <ClCompile Include="src\core\rendering\shader.cpp" />
     <ClCompile Include="src\core\rendering\index_buffer.cpp" />
@@ -147,11 +148,10 @@
     <ClCompile Include="src\core\rendering\vertex_buffer.cpp" />
     <ClCompile Include="src\core\rendering\vertex_array.cpp" />
     <ClCompile Include="src\core\rendering\vertex_buffer_layout.cpp" />
+    <ClCompile Include="src\core\rendering\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shaders\basic.shader" />
-  </ItemGroup>
-  <ItemGroup>
+    <ClInclude Include="libs\include\stb\stb_image.h" />
     <ClInclude Include="src\core\rendering\renderer.h" />
     <ClInclude Include="src\core\rendering\shader.h" />
     <ClInclude Include="src\core\rendering\index_buffer.h" />
@@ -159,6 +159,13 @@
     <ClInclude Include="src\core\rendering\vertex_buffer.h" />
     <ClInclude Include="src\core\rendering\vertex_array.h" />
     <ClInclude Include="src\core\rendering\vertex_buffer_layout.h" />
+    <ClInclude Include="src\core\rendering\texture.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shaders\basic.shader" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\textures\hearth.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
