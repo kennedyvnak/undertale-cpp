@@ -153,7 +153,7 @@ int main(void) {
     while (!glfwWindowShouldClose(window)) {
         GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
 
-        GL_CALL(glDrawElements(GL_TRIANGLES, 6, GL_INT, nullptr));
+        GL_CALL(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
         glfwSwapBuffers(window);
 
