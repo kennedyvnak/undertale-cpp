@@ -1,5 +1,5 @@
 #include <iostream>
-#include "core/rendering/renderer.h"
+#include "open_gl_handler.h"
 
 void gl_clear_error() {
     while (glGetError() != GL_NO_ERROR);
