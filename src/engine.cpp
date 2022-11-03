@@ -105,6 +105,10 @@ int main(void) {
     if (!glfwInit())
         return -1;
 
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
     window = glfwCreateWindow(16*64, 9*64, "Undertale", NULL, NULL);
@@ -136,6 +140,10 @@ int main(void) {
         0, 1, 2,
         2, 3, 0
     };
+
+    unsigned int vao;
+    GL_CALL(glGenVertexArrays(1, &vao));
+    GL_CALL(glBindVertexArray(vao));
     
     unsigned int buffer;
     GL_CALL(glGenBuffers(1, &buffer));
@@ -157,13 +165,23 @@ int main(void) {
     GL_CALL(int location = glGetUniformLocation(shader, "u_Color"));
     ASSERT(location != -1);
 
+    GL_CALL(glBindVertexArray(0));
+    GL_CALL(glUseProgram(0));
+    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
+    GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+
     while (!glfwWindowShouldClose(window)) {
         GL_CALL(glClearColor(0.07f, 0.13f, 0.17f, 1.0f));
         GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
 
         float time = float(glfwGetTime());
 
+        GL_CALL(glUseProgram(shader));
         GL_CALL(glUniform4f(location, 0.5f + sinf(time) * 0.5f, 0.5f + cosf(time) * 0.5f, 0.5f + sinf(time * 3.14) * 0.5f, 1.0f));
+        
+        GL_CALL(glBindVertexArray(vao));
+        GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
+        
         GL_CALL(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
         glfwSwapBuffers(window);
