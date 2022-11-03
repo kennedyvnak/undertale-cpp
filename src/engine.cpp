@@ -116,6 +116,9 @@ int main(void) {
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
 
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
+
     if (glewInit() != GLEW_OK)
         std::cout << "Error on glew initialization!" << std::endl;
 
@@ -132,7 +135,7 @@ int main(void) {
         0, 1, 2,
         2, 3, 0
     };
-
+    
     unsigned int buffer;
     GL_CALL(glGenBuffers(1, &buffer));
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, buffer));
@@ -151,6 +154,7 @@ int main(void) {
     GL_CALL(glUseProgram(shader));
 
     while (!glfwWindowShouldClose(window)) {
+        GL_CALL(glClearColor(0.07f, 0.13f, 0.17f, 1.0f));
         GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
 
         GL_CALL(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
