@@ -27,9 +27,10 @@ void Shader::unbind() const {
     GL_CALL(glUseProgram(0));
 }
 
-int Shader::get_uniform_location(const std::string& name) {
-    if (_uniform_location_cache.find(name) != _uniform_location_cache.end()) {
-        return _uniform_location_cache[name];
+int Shader::get_uniform_location(const std::string& name) const {
+    auto location_search = _uniform_location_cache.find(name);
+    if (location_search != _uniform_location_cache.end()) {
+        return location_search->second;
     }
 
     GL_CALL(int location = glGetUniformLocation(_id, name.c_str()));

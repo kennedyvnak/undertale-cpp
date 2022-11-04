@@ -14,13 +14,13 @@ class Shader {
 private:
 	std::string _filepath;
 	unsigned int _id;
-	std::unordered_map<std::string, int> _uniform_location_cache;
+	mutable std::unordered_map<std::string, int> _uniform_location_cache;
 
 	ShaderProgramSource parse_shader(const std::string& filename);
 	unsigned int compile_shader(unsigned int type, const std::string& source);
 	unsigned int create_shader(const std::string& vert_shader_source, const std::string& frag_shader_source);
 	
-	int get_uniform_location(const std::string& name);
+	int get_uniform_location(const std::string& name) const;
 
 public:
 	Shader(const std::string& filename);
