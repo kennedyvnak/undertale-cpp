@@ -42,14 +42,11 @@ int main(void) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
-    // Setup Dear ImGui style
     ImGui::StyleColorsDark();
-    //ImGui::StyleColorsClassic();
 
-    // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
 
@@ -84,7 +81,7 @@ int main(void) {
         IndexBuffer ib(indices, 6);
 
         glm::mat4 proj = glm::ortho(0.0f, float(window_width), 0.0f, float(window_height), -1.0f, 1.0f);
-        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(float(window_width)*0.5f, float(window_height)*0.5f, 0.0f));
+        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f));
 
         Shader shader("res/shaders/basic.shader");
         shader.bind();
@@ -113,10 +110,9 @@ int main(void) {
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-
             {
                 ImGui::Begin("Properties");
-                ImGui::SliderFloat2("Translation", &translation.x, -float(window_width)*0.5f, float(window_width) * 0.5f);
+                ImGui::SliderFloat2("Translation", &translation.x, 0.0f, float(window_width));
                 ImGui::SliderFloat2("Scale", &scale.x, 0.0f, 300.0f);
                 ImGui::SliderFloat("Rotation", &rotation, 0.0f, 360.0f);
 
@@ -126,8 +122,10 @@ int main(void) {
             
             shader.bind();
             texture.bind(0);
+            
             float time = float(glfwGetTime());
             shader.set_uniform4f("u_Color", 0.5f + sinf(time) * 0.5f, 0.5f + cosf(time) * 0.5f, 0.5f + sinf(time * 3.14f) * 0.5f, 1.0f);
+            
             glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(translation, 0.0f));
             model = glm::scale(model, glm::vec3(scale, 0.0f));
             model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
