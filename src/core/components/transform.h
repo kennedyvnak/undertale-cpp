@@ -21,13 +21,13 @@ public:
 	void set_prs(vec2 position, float rotation, vec2 scale);
 
 	inline const vec2 get_position() const& { return _position; }
-	void set_position(vec2& position) { _position = position; recalculate_matrix(); }
+	void set_position(vec2 position) { _position = position; recalculate_matrix(); }
 
 	inline const float get_rotation() const& { return _rotation; }
-	void set_rotation(float& rotation) { _rotation = rotation; recalculate_matrix(); }
+	void set_rotation(float rotation) { _rotation = rotation; recalculate_matrix(); }
 
 	inline const vec2 get_scale() const& { return _scale; }
-	void set_scale(vec2& scale) { _scale = scale; recalculate_matrix(); }
+	void set_scale(vec2 scale) { _scale = scale; recalculate_matrix(); }
 
 	inline const mat4 get_matrix() const& { return _matrix; }
 };
