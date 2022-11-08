@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\core\camera\camera.cpp" />
     <ClCompile Include="libs\include\imgui\imgui.cpp" />
     <ClCompile Include="libs\include\imgui\imgui_demo.cpp" />
     <ClCompile Include="libs\include\imgui\imgui_draw.cpp" />
@@ -147,6 +148,8 @@
     <ClCompile Include="libs\include\imgui\imgui_tables.cpp" />
     <ClCompile Include="libs\include\imgui\imgui_widgets.cpp" />
     <ClCompile Include="libs\include\stb\stb_image.cpp" />
+    <ClCompile Include="src\core\rendering\material.cpp" />
+    <ClCompile Include="src\core\rendering\mesh.cpp" />
     <ClCompile Include="src\core\rendering\renderer.cpp" />
     <ClCompile Include="src\core\rendering\shader.cpp" />
     <ClCompile Include="src\core\rendering\index_buffer.cpp" />
@@ -156,8 +159,10 @@
     <ClCompile Include="src\core\rendering\vertex_array.cpp" />
     <ClCompile Include="src\core\rendering\vertex_buffer_layout.cpp" />
     <ClCompile Include="src\core\rendering\texture.cpp" />
+    <ClCompile Include="src\core\components\transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\core\camera\camera.h" />
     <ClInclude Include="libs\include\imgui\imconfig.h" />
     <ClInclude Include="libs\include\imgui\imgui.h" />
     <ClInclude Include="libs\include\imgui\imgui_impl_glfw.h" />
@@ -167,6 +172,8 @@
     <ClInclude Include="libs\include\imgui\imstb_rectpack.h" />
     <ClInclude Include="libs\include\imgui\imstb_textedit.h" />
     <ClInclude Include="libs\include\imgui\imstb_truetype.h" />
+    <ClInclude Include="src\core\rendering\mesh.h" />
+    <ClInclude Include="src\core\rendering\material.h" />
     <ClInclude Include="src\core\rendering\renderer.h" />
     <ClInclude Include="src\core\rendering\shader.h" />
     <ClInclude Include="src\core\rendering\index_buffer.h" />
@@ -175,6 +182,7 @@
     <ClInclude Include="src\core\rendering\vertex_array.h" />
     <ClInclude Include="src\core\rendering\vertex_buffer_layout.h" />
     <ClInclude Include="src\core\rendering\texture.h" />
+    <ClInclude Include="src\core\components\transform.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\basic.shader" />

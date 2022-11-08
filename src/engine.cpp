@@ -14,6 +14,7 @@
 #include "core/rendering/shader.h"
 #include "core/rendering/renderer.h"
 #include "core/rendering/texture.h"
+#include "core/camera/camera.h"
 
 int main(void) {
     int window_width = 16 * 64;
@@ -59,11 +60,11 @@ int main(void) {
     std::cout << "Initialize OpenGL " << glGetString(GL_VERSION) << "\n.\n." << std::endl;
 
     {
-        float positions[] = {
-             -0.5f, -0.5f, 0.0f, 0.0f,
-              0.5f, -0.5f, 1.0f, 0.0f,
-              0.5f,  0.5f, 1.0f, 1.0f,
-             -0.5f,  0.5f, 0.0f, 1.0f
+        Vertex positions[] = {
+             glm::vec2(- 0.5f, -0.5f),  glm::vec2(0.0f, 0.0f),
+             glm::vec2(0.5f, -0.5f),    glm::vec2(1.0f, 0.0f),
+             glm::vec2(0.5f, 0.5f),     glm::vec2(1.0f, 1.0f),
+             glm::vec2(-0.5f, 0.5f),    glm::vec2(0.0f, 1.0f)
         };
 
         unsigned int indices[] = {
@@ -71,37 +72,28 @@ int main(void) {
             2, 3, 0
         };
 
-        VertexArray va;
-        VertexBuffer vb(positions, 16 * sizeof(float));
-        VertexBufferLayout layout;
-        layout.push(GL_FLOAT, 2);
-        layout.push(GL_FLOAT, 2);
-        va.add_buffer(vb, layout);
-
-        IndexBuffer ib(indices, 6);
-
-        glm::mat4 proj = glm::ortho(0.0f, float(window_width), 0.0f, float(window_height), -1.0f, 1.0f);
-        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f));
+        Camera cam(0.0f, float(window_width), 0.0f, float(window_height), -1.0f, 1.0f);
 
         Shader shader("res/shaders/basic.shader");
         shader.bind();
+
+        Material mat(shader);
+
+        std::vector<Vertex> pos(positions, positions + sizeof(positions) / sizeof(Vertex));
+        std::vector<unsigned int> ind(indices, indices + sizeof(indices) / sizeof(unsigned int));
+
+        Mesh mesh(pos, ind);
 
         Texture texture("res/textures/hearth.png");
         texture.bind(0);
         shader.set_uniform1i("u_Texture", 0);
 
-        va.unbind();
-        vb.unbind();
-        ib.unbind();
         shader.unbind();
         texture.unbind();
 
-
         Renderer renderer;
 
-        glm::vec2 translation(0.0f);
-        glm::vec2 scale(200.0f);
-        float rotation(0);
+        Transform transform = Transform(glm::vec2(0.0f), 0.0f, glm::vec2(200.0f));
 
         while (!glfwWindowShouldClose(window)) {
             renderer.clear();
@@ -111,10 +103,16 @@ int main(void) {
             ImGui::NewFrame();
 
             {
+                glm::vec2 translation = transform.get_position();
+                float rotation = transform.get_rotation();
+                glm::vec2 scale = transform.get_scale();
                 ImGui::Begin("Properties");
                 ImGui::SliderFloat2("Translation", &translation.x, 0.0f, float(window_width));
                 ImGui::SliderFloat2("Scale", &scale.x, 0.0f, 300.0f);
                 ImGui::SliderFloat("Rotation", &rotation, 0.0f, 360.0f);
+                transform.set_position(translation);
+                transform.set_rotation(rotation);
+                transform.set_scale(scale);
 
                 ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
                 ImGui::End();
@@ -125,14 +123,11 @@ int main(void) {
             
             float time = float(glfwGetTime());
             shader.set_uniform4f("u_Color", 0.5f + sinf(time) * 0.5f, 0.5f + cosf(time) * 0.5f, 0.5f + sinf(time * 3.14f) * 0.5f, 1.0f);
-            
-            glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(translation, 0.0f));
-            model = glm::scale(model, glm::vec3(scale, 0.0f));
-            model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-            glm::mat4 mvp = proj * view * model;
+           
+            glm::mat4 mvp = cam.get_view_projection() * transform.get_matrix();
             shader.set_uniform_mat4f("u_MVP", mvp);
 
-            renderer.draw(va, ib, shader);
+            renderer.draw(mesh, mat);
             
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

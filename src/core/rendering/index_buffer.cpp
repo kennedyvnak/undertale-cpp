@@ -2,17 +2,36 @@
 
 #include "utility/open_gl_handler.h"
 
-IndexBuffer::IndexBuffer(const unsigned int* data, unsigned int count) 
-    : _count(count) {
-    ASSERT(sizeof(unsigned int) == sizeof(GLuint));
+IndexBuffer::IndexBuffer() 
+    : _created(false), _id(0) { }
 
-    GL_CALL(glGenBuffers(1, &_id));
-    GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _id));
-    GL_CALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), data, GL_STATIC_DRAW));
+IndexBuffer::IndexBuffer(const std::vector<unsigned int>& indices) {
+    set_buffer(indices);
 }
 
 IndexBuffer::~IndexBuffer() {
+    destroy_buffer();
+}
+
+void IndexBuffer::set_buffer(const std::vector<unsigned int>& indices) {
+    ASSERT(sizeof(unsigned int) == sizeof(GLuint));
+
+    if (_created)
+        destroy_buffer();
+
+    GL_CALL(glGenBuffers(1, &_id));
+    bind();
+    GL_CALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW));
+    _created = true;
+    unbind();
+}
+
+void IndexBuffer::destroy_buffer() {
+    if (!_created)
+        return;
+
     GL_CALL(glDeleteBuffers(1, &_id));
+    _created = false;
 }
 
 void IndexBuffer::bind() const {

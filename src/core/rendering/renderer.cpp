@@ -1,11 +1,7 @@
 #include "renderer.h"
 
-void Renderer::draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const {
-    shader.bind();
-    va.bind();
-    ib.bind();
-
-    GL_CALL(glDrawElements(GL_TRIANGLES, ib.get_count(), GL_UNSIGNED_INT, nullptr));
+void Renderer::draw(const Mesh& mesh, const Material& mat) const {
+    mesh.draw(mat);
 }
 
 void Renderer::clear() const {

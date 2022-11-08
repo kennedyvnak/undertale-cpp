@@ -80,6 +80,18 @@
     <ClCompile Include="libs\include\imgui\imgui_widgets.cpp">
       <Filter>source files\imgui</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\rendering\mesh.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\rendering\material.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\camera\camera.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\components\transform.cpp">
+      <Filter>source files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\utility\open_gl_handler.h">
@@ -132,6 +144,18 @@
     </ClInclude>
     <ClInclude Include="libs\include\imgui\imstb_truetype.h">
       <Filter>header files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\rendering\mesh.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\rendering\material.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\camera\camera.h">
+      <Filter>header files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\components\transform.h">
+      <Filter>header files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

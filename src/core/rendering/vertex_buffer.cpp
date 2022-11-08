@@ -2,10 +2,10 @@
 
 #include "utility/open_gl_handler.h"
 
-VertexBuffer::VertexBuffer(const void* data, unsigned int size) {
+VertexBuffer::VertexBuffer(std::vector<Vertex>& vertices) {
     GL_CALL(glGenBuffers(1, &_id));
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, _id));
-    GL_CALL(glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW));
+    GL_CALL(glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW));
 }
 
 VertexBuffer::~VertexBuffer() {
