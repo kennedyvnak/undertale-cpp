@@ -1,5 +1,7 @@
 -- Include conan gennerate script
 include("conanbuildinfo.premake.lua")
+imgui_bindings_path = conan_rootpath_imgui .. "/res/bindings"
+imgui_bindings_files = { imgui_bindings_path .. "/imgui_impl_glfw.*", imgui_bindings_path .. "/imgui_impl_opengl3.*" }
 
 -- Main Workspace
 workspace "UndertaleCpp"
@@ -15,9 +17,11 @@ workspace "UndertaleCpp"
 		location "src"
         debugdir "app"
 
+        defines { "GLFW_INCLUDE_NONE", "GLEW_STATIC", "STB_IMAGE_IMPLEMENTATION" }
+        includedirs { "src", imgui_bindings_path }
         linkoptions { conan_exelinkflags }
 
-        files { "**.h", "**.cpp" }
+        files { "src/**.h", "src/**.cpp", imgui_bindings_files, conan_rootpath_stb .."/include/stb_image.h", "res/**" }
 
         filter "configurations:Debug"
 		defines { "DEBUG" }
