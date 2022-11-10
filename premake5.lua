@@ -14,8 +14,6 @@ workspace "UndertaleCpp"
         language "C++"
         targetdir "bin/%{cfg.buildcfg}"
 		objdir "bin/%{cfg.buildcfg}/obj/"
-		location "src"
-        debugdir "app"
 
         defines { "GLFW_INCLUDE_NONE", "GLEW_STATIC", "STB_IMAGE_IMPLEMENTATION" }
         includedirs { "src", imgui_bindings_path }
