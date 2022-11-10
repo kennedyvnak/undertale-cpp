@@ -1,0 +1,9 @@
+[requires]
+glfw/3.3.8
+glew/2.2.0
+stb/cci.20210910
+glm/cci.20220420
+imgui/cci.20220621+1.88.docking
+
+[generators]
+premake

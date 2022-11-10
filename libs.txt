@@ -1,5 +1,0 @@
-glfw3
-glew
-stb_image
-glm
-imgui
