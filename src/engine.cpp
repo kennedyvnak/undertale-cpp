@@ -61,10 +61,10 @@ int main(void) {
 
     {
         Vertex positions[] = {
-             glm::vec2(- 0.5f, -0.5f),  glm::vec2(0.0f, 0.0f),
-             glm::vec2(0.5f, -0.5f),    glm::vec2(1.0f, 0.0f),
-             glm::vec2(0.5f, 0.5f),     glm::vec2(1.0f, 1.0f),
-             glm::vec2(-0.5f, 0.5f),    glm::vec2(0.0f, 1.0f)
+            glm::vec2(-0.5f, -0.5f),  glm::vec2(0.0f, 0.0f),
+            glm::vec2(0.5f, -0.5f),    glm::vec2(1.0f, 0.0f),
+            glm::vec2(0.5f, 0.5f),     glm::vec2(1.0f, 1.0f),
+            glm::vec2(-0.5f, 0.5f),    glm::vec2(0.0f, 1.0f)
         };
 
         unsigned int indices[] = {
@@ -117,18 +117,18 @@ int main(void) {
                 ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
                 ImGui::End();
             }
-            
+
             shader.bind();
             texture.bind(0);
-            
+
             float time = float(glfwGetTime());
             shader.set_uniform4f("u_Color", 0.5f + sinf(time) * 0.5f, 0.5f + cosf(time) * 0.5f, 0.5f + sinf(time * 3.14f) * 0.5f, 1.0f);
-           
+
             glm::mat4 mvp = cam.get_view_projection() * transform.get_matrix();
             shader.set_uniform_mat4f("u_MVP", mvp);
 
             renderer.draw(mesh, mat);
-            
+
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 

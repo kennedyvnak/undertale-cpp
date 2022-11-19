@@ -9,7 +9,7 @@
 #include "utility/open_gl_handler.h"
 
 Shader::Shader(const std::string& filename)
-	: _filepath(filename), _id(0) {
+    : _filepath(filename), _id(0) {
     ShaderProgramSource source = parse_shader(filename);
     _id = create_shader(source.vertex_source, source.fragment_source);
 }
@@ -65,12 +65,10 @@ ShaderProgramSource Shader::parse_shader(const std::string& filename) {
         if (line.find("#shader") != std::string::npos) {
             if (line.find("vertex") != std::string::npos) {
                 type = ShaderType::VERTEX;
-            }
-            else if (line.find("fragment") != std::string::npos) {
+            } else if (line.find("fragment") != std::string::npos) {
                 type = ShaderType::FRAGMENT;
             }
-        }
-        else {
+        } else {
             ss[(int)type] << line << '\n';
         }
     }

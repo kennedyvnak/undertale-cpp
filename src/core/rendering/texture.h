@@ -16,7 +16,7 @@ public:
 	void bind(unsigned int slot) const;
 	void unbind() const;
 
-	inline int get_width() const { return _width; }	
+	inline int get_width() const { return _width; }
 	inline int get_height() const { return _height; }
 };
 

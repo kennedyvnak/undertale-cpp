@@ -2,7 +2,7 @@
 
 #include "utility/open_gl_handler.h"
 
-IndexBuffer::IndexBuffer() 
+IndexBuffer::IndexBuffer()
     : _created(false), _id(0) { }
 
 IndexBuffer::IndexBuffer(const std::vector<unsigned int>& indices) {

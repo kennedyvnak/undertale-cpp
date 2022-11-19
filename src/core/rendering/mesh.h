@@ -20,9 +20,9 @@ public:
 	void draw(const Material& mat) const;
 
 	inline const VertexArray get_va() const& { return _va; }
-	void set_va(VertexArray& va) { _va = va; }
+	void set_va(const VertexArray& va) { _va = va; }
 
-	//inline const IndexBuffer get_ib() const& { return _ib; }
-	//void set_ib(IndexBuffer& ib) { _ib = ib; }
+	inline const IndexBuffer get_ib() const& { return _ib; }
+	void set_ib(const IndexBuffer& ib) { _ib = ib; }
 };
 

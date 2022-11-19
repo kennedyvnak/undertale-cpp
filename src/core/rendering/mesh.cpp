@@ -12,7 +12,7 @@ Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices) {
 	layout.push(GL_FLOAT, 2);
 	layout.push(GL_FLOAT, 2);
 	_va.add_buffer(vb, layout);
-	
+
 	_va.unbind();
 	vb.unbind();
 	_ib.unbind();
