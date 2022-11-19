@@ -26,4 +26,10 @@ add_executable(${PROJECT_NAME}
                ${IMGUI_GLFW_BINDINGS_FILES} ${IMGUI_OPENGL3_BINDINGS_FILES}
 )
 
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+        target_compile_definitions(${PROJECT_NAME} PRIVATE "ENGINE_DEBUG")
+elseif(CMAKE_BUILD_TYPE MATCHES Release)
+        target_compile_definitions(${PROJECT_NAME} PRIVATE "ENGINE_RELEASE")
+endif()
+
 target_link_libraries(${PROJECT_NAME} ${CONAN_LIBS})
