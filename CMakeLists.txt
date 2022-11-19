@@ -20,8 +20,6 @@ file(GLOB_RECURSE RESOURCE_FILES res/**)
 file(GLOB_RECURSE IMGUI_GLFW_BINDINGS_FILES ${CONAN_IMGUI_ROOT}/res/bindings/imgui_impl_glfw.*) # imgui bindings
 file(GLOB_RECURSE IMGUI_OPENGL3_BINDINGS_FILES ${CONAN_IMGUI_ROOT}/res/bindings/imgui_impl_opengl3.*) # imgui bindings
 
-message(STATUS "${IMGUI_BINDINGS_FILES}")
-
 add_executable(${PROJECT_NAME}
                ${SOURCE_FILES}
                ${RESOURCE_FILES}
