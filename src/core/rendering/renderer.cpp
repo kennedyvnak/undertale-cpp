@@ -1,7 +1,7 @@
 #include "renderer.h"
 
-void Renderer::draw(const Mesh& mesh, const Material& mat) const {
-    mesh.draw(mat);
+void Renderer::draw(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> mat) const {
+    mesh->draw(mat);
 }
 
 void Renderer::clear() const {

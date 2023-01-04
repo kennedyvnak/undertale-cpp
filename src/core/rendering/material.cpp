@@ -1,6 +1,6 @@
 #include "material.h"
 
-Material::Material(const Shader& shader)
+Material::Material(std::shared_ptr<Shader> shader)
 	: _shader(shader) { }
 
 void Material::bind() const {

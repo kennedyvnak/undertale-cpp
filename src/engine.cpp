@@ -1,5 +1,6 @@
 #include "engine.h"
 
+#include <memory>
 #include <GLFW/glfw3.h>
 #include <gl/glew.h>
 #include <glm/glm.hpp>
@@ -74,24 +75,23 @@ int main(void) {
             2, 3, 0
         };
 
-        Camera cam(0.0f, float(window_width), 0.0f, float(window_height), -1.0f, 1.0f);
-
-        Shader shader("res/shaders/basic.shader");
-        shader.bind();
-
-        Material mat(shader);
+        std::shared_ptr<Camera> cam = std::make_shared<Camera>(0.0f, float(window_width), 0.0f, float(window_height), -1.0f, 1.0f);
+        
+        std::shared_ptr<Shader> shader = std::make_shared<Shader>("res/shaders/basic.shader");
+        shader->bind();
+        
+        std::shared_ptr<Material> mat = std::make_shared<Material>(shader);
 
         std::vector<Vertex> pos(positions, positions + sizeof(positions) / sizeof(Vertex));
         std::vector<unsigned int> ind(indices, indices + sizeof(indices) / sizeof(unsigned int));
+        std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(pos, ind);
 
-        Mesh mesh(pos, ind);
+        std::shared_ptr<Texture> texture = std::make_shared<Texture>("res/textures/hearth.png");
+        texture->bind(0);
+        shader->set_uniform1i("u_Texture", 0);
 
-        Texture texture("res/textures/hearth.png");
-        texture.bind(0);
-        shader.set_uniform1i("u_Texture", 0);
-
-        shader.unbind();
-        texture.unbind();
+        shader->unbind();
+        texture->unbind();
 
         Renderer renderer;
 
@@ -120,14 +120,14 @@ int main(void) {
                 ImGui::End();
             }
 
-            shader.bind();
-            texture.bind(0);
+            shader->bind();
+            texture->bind(0);
 
             float time = float(glfwGetTime());
-            shader.set_uniform4f("u_Color", 0.5f + sinf(time) * 0.5f, 0.5f + cosf(time) * 0.5f, 0.5f + sinf(time * 3.14f) * 0.5f, 1.0f);
+            shader->set_uniform4f("u_Color", 0.5f + sinf(time) * 0.5f, 0.5f + cosf(time) * 0.5f, 0.5f + sinf(time * 3.14f) * 0.5f, 1.0f);
 
-            glm::mat4 mvp = cam.get_view_projection() * transform.get_matrix();
-            shader.set_uniform_mat4f("u_MVP", mvp);
+            Matrix mvp = cam->get_view_projection() * transform.get_matrix();
+            shader->set_uniform_mat4f("u_MVP", mvp);
 
             renderer.draw(mesh, mat);
 

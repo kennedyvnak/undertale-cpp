@@ -1,16 +1,18 @@
 #pragma once
 
-#include "shader.h"
+#include <memory>
+
+class Shader;
 
 class Material {
 private:
-	Shader _shader;
+	std::shared_ptr<Shader> _shader;
 
 public:
-	Material(const Shader& shader);
+	Material(std::shared_ptr<Shader> shader);
 	void bind() const;
 
-	inline const Shader& get_shader() const& { return _shader; }
-	void set_shader(const Shader& shader) { _shader = shader; }
+	std::shared_ptr<Shader> get_shader() const { return _shader; }
+	void set_shader(std::shared_ptr<Shader> shader) { _shader = shader; }
 };
 

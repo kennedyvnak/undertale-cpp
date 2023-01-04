@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "material.h"
 #include "vertex_array.h"
 #include "index_buffer.h"
@@ -17,7 +18,7 @@ public:
 
 	Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
 
-	void draw(const Material& mat) const;
+	void draw(std::shared_ptr<Material> mat) const;
 
 	inline const VertexArray get_va() const& { return _va; }
 	void set_va(const VertexArray& va) { _va = va; }

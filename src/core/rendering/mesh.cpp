@@ -18,8 +18,8 @@ Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices) {
 	_ib.unbind();
 }
 
-void Mesh::draw(const Material& mat) const {
-	mat.bind();
+void Mesh::draw(std::shared_ptr<Material> mat) const {
+	mat->bind();
 	_va.bind();
 	_ib.bind();
 
