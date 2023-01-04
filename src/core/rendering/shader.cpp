@@ -2,13 +2,12 @@
 
 #include <iostream> 
 #include <fstream>
-#include <string>
 #include <sstream>
 
 #include "shader.h"
 #include "utility/open_gl_handler.h"
 
-Shader::Shader(const std::string& filename)
+Shader::Shader(const String& filename)
     : _filepath(filename), _id(0) {
     ShaderProgramSource source = parse_shader(filename);
     _id = create_shader(source.vertex_source, source.fragment_source);
@@ -27,7 +26,7 @@ void Shader::unbind() const {
     GL_CALL(glUseProgram(0));
 }
 
-int Shader::get_uniform_location(const std::string& name) const {
+int Shader::get_uniform_location(const String& name) const {
     auto location_search = _uniform_location_cache.find(name);
     if (location_search != _uniform_location_cache.end()) {
         return location_search->second;
@@ -39,33 +38,33 @@ int Shader::get_uniform_location(const std::string& name) const {
     return location;
 }
 
-void Shader::set_uniform1i(const std::string& name, int value) {
+void Shader::set_uniform1i(const String& name, int value) {
     GL_CALL(glUniform1i(get_uniform_location(name), value));
 }
 
-void Shader::set_uniform4f(const std::string& name, float v0, float v1, float v2, float v3) {
+void Shader::set_uniform4f(const String& name, float v0, float v1, float v2, float v3) {
     GL_CALL(glUniform4f(get_uniform_location(name), v0, v1, v2, v3));
 }
 
-void Shader::set_uniform_mat4f(const std::string& name, glm::mat4 matrix) {
+void Shader::set_uniform_mat4f(const String& name, Matrix matrix) {
     GL_CALL(glUniformMatrix4fv(get_uniform_location(name), 1, GL_FALSE, glm::value_ptr(matrix)));
 }
 
-ShaderProgramSource Shader::parse_shader(const std::string& filename) {
+ShaderProgramSource Shader::parse_shader(const String& filename) {
     std::ifstream stream(_filepath);
 
     enum class ShaderType {
         NONE = -1, VERTEX = 0, FRAGMENT = 1
     };
 
-    std::string line;
+    String line;
     std::stringstream ss[2];
     ShaderType type = ShaderType::NONE;
     while (getline(stream, line)) {
-        if (line.find("#shader") != std::string::npos) {
-            if (line.find("vertex") != std::string::npos) {
+        if (line.find("#shader") != String::npos) {
+            if (line.find("vertex") != String::npos) {
                 type = ShaderType::VERTEX;
-            } else if (line.find("fragment") != std::string::npos) {
+            } else if (line.find("fragment") != String::npos) {
                 type = ShaderType::FRAGMENT;
             }
         } else {
@@ -76,7 +75,7 @@ ShaderProgramSource Shader::parse_shader(const std::string& filename) {
     return { ss[0].str(), ss[1].str() };
 }
 
-unsigned int Shader::compile_shader(unsigned int type, const std::string& source) {
+unsigned int Shader::compile_shader(unsigned int type, const String& source) {
     GL_CALL(unsigned int id = glCreateShader(type));
 
     const char* src = source.c_str();
@@ -99,7 +98,7 @@ unsigned int Shader::compile_shader(unsigned int type, const std::string& source
     return id;
 }
 
-unsigned int Shader::create_shader(const std::string& vert_shader_source, const std::string& frag_shader_source) {
+unsigned int Shader::create_shader(const String& vert_shader_source, const String& frag_shader_source) {
     GL_CALL(unsigned int program = glCreateProgram());
     unsigned int vertex_shader = compile_shader(GL_VERTEX_SHADER, vert_shader_source);
     unsigned int fragment_shader = compile_shader(GL_FRAGMENT_SHADER, frag_shader_source);

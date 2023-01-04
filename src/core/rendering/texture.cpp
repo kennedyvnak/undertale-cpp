@@ -2,7 +2,7 @@
 
 #include <stb_image.h>
 
-Texture::Texture(const std::string& path)
+Texture::Texture(const String& path)
 	: _id(0), _filepath(path), _local_buffer(nullptr), _width(0), _height(0), _bpp(0) {
 	stbi_set_flip_vertically_on_load(1);
 	_local_buffer = stbi_load(path.c_str(), &_width, &_height, &_bpp, 0);

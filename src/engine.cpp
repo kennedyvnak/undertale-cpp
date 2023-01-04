@@ -1,3 +1,5 @@
+#include "engine.h"
+
 #include <GLFW/glfw3.h>
 #include <gl/glew.h>
 #include <glm/glm.hpp>
@@ -61,10 +63,10 @@ int main(void) {
 
     {
         Vertex positions[] = {
-            glm::vec2(-0.5f, -0.5f),  glm::vec2(0.0f, 0.0f),
-            glm::vec2(0.5f, -0.5f),    glm::vec2(1.0f, 0.0f),
-            glm::vec2(0.5f, 0.5f),     glm::vec2(1.0f, 1.0f),
-            glm::vec2(-0.5f, 0.5f),    glm::vec2(0.0f, 1.0f)
+            Vector2(-0.5f, -0.5f),   Vector2(0.0f, 0.0f),
+            Vector2( 0.5f, -0.5f),   Vector2(1.0f, 0.0f),
+            Vector2( 0.5f,  0.5f),   Vector2(1.0f, 1.0f),
+            Vector2(-0.5f,  0.5f),   Vector2(0.0f, 1.0f)
         };
 
         unsigned int indices[] = {
@@ -93,7 +95,7 @@ int main(void) {
 
         Renderer renderer;
 
-        Transform transform = Transform(glm::vec2(0.0f), 0.0f, glm::vec2(200.0f));
+        Transform transform = Transform(Vector2(0.0f), 0.0f, Vector2(200.0f));
 
         while (!glfwWindowShouldClose(window)) {
             renderer.clear();
@@ -103,9 +105,9 @@ int main(void) {
             ImGui::NewFrame();
 
             {
-                glm::vec2 translation = transform.get_position();
+                Vector2 translation = transform.get_position();
                 float rotation = transform.get_rotation();
-                glm::vec2 scale = transform.get_scale();
+                Vector2 scale = transform.get_scale();
                 ImGui::Begin("Properties");
                 ImGui::SliderFloat2("Translation", &translation.x, 0.0f, float(window_width));
                 ImGui::SliderFloat2("Scale", &scale.x, 0.0f, 300.0f);

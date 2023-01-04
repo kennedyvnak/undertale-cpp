@@ -1,11 +1,11 @@
 #pragma once
 
-#include <glm/glm.hpp>
+#include "engine.h"
 #include <vector>
 
 struct Vertex {
-	glm::vec2 position;
-	glm::vec2 uv;
+	Vector2 position;
+	Vector2 uv;
 };
 
 class VertexBuffer {
