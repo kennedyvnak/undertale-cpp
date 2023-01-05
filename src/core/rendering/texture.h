@@ -1,7 +1,6 @@
 #pragma once
 
 #include "engine.h"
-#include "renderer.h"
 
 class Texture {
 private:

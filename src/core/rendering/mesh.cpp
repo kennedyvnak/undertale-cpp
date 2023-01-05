@@ -1,4 +1,6 @@
 #include "mesh.h"
+#include "shader.h"
+#include "material.h"
 
 Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices) {
 	Mesh::vertices = vertices;
@@ -24,4 +26,5 @@ void Mesh::draw(std::shared_ptr<Material> mat) const {
 	_ib.bind();
 
 	GL_CALL(glDrawElements(GL_TRIANGLES, GLsizei(indices.size()), GL_UNSIGNED_INT, nullptr));
+	mat->unbind();
 }

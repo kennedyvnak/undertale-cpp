@@ -15,7 +15,8 @@
 #include "core/rendering/vertex_array.h"
 #include "core/rendering/vertex_buffer_layout.h"
 #include "core/rendering/shader.h"
-#include "core/rendering/renderer.h"
+#include "core/rendering/material.h"
+#include "core/rendering/mesh.h"
 #include "core/rendering/texture.h"
 #include "core/camera/camera.h"
 
@@ -78,8 +79,7 @@ int main(void) {
         std::shared_ptr<Camera> cam = std::make_shared<Camera>(0.0f, float(window_width), 0.0f, float(window_height), -1.0f, 1.0f);
         
         std::shared_ptr<Shader> shader = std::make_shared<Shader>("res/shaders/basic.shader");
-        shader->bind();
-        
+
         std::shared_ptr<Material> mat = std::make_shared<Material>(shader);
 
         std::vector<Vertex> pos(positions, positions + sizeof(positions) / sizeof(Vertex));
@@ -87,18 +87,14 @@ int main(void) {
         std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(pos, ind);
 
         std::shared_ptr<Texture> texture = std::make_shared<Texture>("res/textures/hearth.png");
-        texture->bind(0);
-        shader->set_uniform1i("u_Texture", 0);
 
-        shader->unbind();
-        texture->unbind();
-
-        Renderer renderer;
+        mat->set_texture("u_Texture", texture);
 
         Transform transform = Transform(Vector2(0.0f), 0.0f, Vector2(200.0f));
 
         while (!glfwWindowShouldClose(window)) {
-            renderer.clear();
+            GL_CALL(glClearColor(0.07f, 0.13f, 0.17f, 1.0f));
+            GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
 
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
@@ -120,16 +116,13 @@ int main(void) {
                 ImGui::End();
             }
 
-            shader->bind();
-            texture->bind(0);
-
             float time = float(glfwGetTime());
-            shader->set_uniform4f("u_Color", 0.5f + sinf(time) * 0.5f, 0.5f + cosf(time) * 0.5f, 0.5f + sinf(time * 3.14f) * 0.5f, 1.0f);
+            mat->set_vector4("u_Color", Vector4(0.5f + sinf(time) * 0.5f, 0.5f + cosf(time) * 0.5f, 0.5f + sinf(time * 3.14f) * 0.5f, 1.0f));
 
             Matrix mvp = cam->get_view_projection() * transform.get_matrix();
-            shader->set_uniform_mat4f("u_MVP", mvp);
+            mat->set_matrix("u_MVP", mvp);
 
-            renderer.draw(mesh, mat);
+            mesh->draw(mat);
 
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

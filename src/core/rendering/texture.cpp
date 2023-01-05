@@ -1,6 +1,6 @@
 #include "texture.h"
-
 #include <stb_image.h>
+#include "utility/open_gl_handler.h"
 
 Texture::Texture(const String& path)
 	: _id(0), _filepath(path), _local_buffer(nullptr), _width(0), _height(0), _bpp(0) {

@@ -28,7 +28,10 @@ public:
 	void bind() const;
 	void unbind() const;
 
-	void set_uniform1i(const String& name, int value);
-	void set_uniform4f(const String& name, float v0, float v1, float v2, float v3);
-	void set_uniform_mat4f(const String& name, Matrix matrix);
+	void set_uniform_int(const String& name, int value);
+	void set_uniform_float(const String& name, float value);
+	void set_uniform_vector2(const String& name, const Vector2& value);
+	void set_uniform_vector3(const String& name, const Vector3& value);
+	void set_uniform_vector4(const String& name, const Vector4& value);
+	void set_uniform_matrix(const String& name, const Matrix& value);
 };
