@@ -1,9 +1,10 @@
 #pragma once
 
 #include <memory>
+#include <vector>
+#include "core/components/transform.h"
 #include "vertex_array.h"
 #include "index_buffer.h"
-#include "core/components/transform.h"
 
 class Material;
 
@@ -13,18 +14,23 @@ private:
 	IndexBuffer _ib;
 	Transform _transform;
 
+	static std::vector<Vertex> quad_vertices;
+	static std::vector<unsigned int> quad_indices;
+
 public:
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
 
-	Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
+	Mesh();
+	Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int> indices);
 
 	void draw(std::shared_ptr<Material> mat) const;
 
-	inline const VertexArray get_va() const& { return _va; }
-	void set_va(const VertexArray& va) { _va = va; }
+	void set_vertices(const std::vector<Vertex>& vertices);
+	void set_indices(const std::vector<unsigned int>& indices);
 
-	inline const IndexBuffer get_ib() const& { return _ib; }
-	void set_ib(const IndexBuffer& ib) { _ib = ib; }
+	void rebuild_mesh();
+
+	static std::shared_ptr<Mesh> make_quad_mesh();
 };
 

@@ -9,9 +9,13 @@ VertexArray::~VertexArray() {
 	GL_CALL(glDeleteVertexArrays(1, &_id));
 }
 
+void VertexArray::gen_new() {
+	if (_id)
+		GL_CALL(glDeleteVertexArrays(1, &_id));
+	GL_CALL(glGenVertexArrays(1, &_id));
+}
+
 void VertexArray::add_buffer(const VertexBuffer& vb, const VertexBufferLayout& layout) {
-	bind();
-	vb.bind();
 	const auto& elements = layout.get_elements();
 	unsigned int offset = 0;
 	for (unsigned int i = 0; i < elements.size(); i++) {

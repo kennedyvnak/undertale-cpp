@@ -5,7 +5,6 @@
 class IndexBuffer {
 private:
 	unsigned int _id;
-	bool _created;
 
 public:
 	IndexBuffer();
@@ -13,8 +12,6 @@ public:
 	~IndexBuffer();
 
 	void set_buffer(const std::vector<unsigned int>& indices);
-	void destroy_buffer();
-	inline const bool is_valid() const& { return _created; }
 
 	void bind() const;
 	void unbind() const;

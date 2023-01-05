@@ -19,6 +19,8 @@
 #include "core/rendering/mesh.h"
 #include "core/rendering/texture.h"
 #include "core/camera/camera.h"
+#include "core/components/transform.h"
+#include "entities/rendering/texture_renderer.h"
 
 int main(void) {
     int window_width = 16 * 64;
@@ -48,7 +50,7 @@ int main(void) {
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;    // Enable Gamepad Controls
 
     ImGui::StyleColorsDark();
 
@@ -64,33 +66,11 @@ int main(void) {
     std::cout << "Initialize OpenGL " << glGetString(GL_VERSION) << "\n.\n." << std::endl;
 
     {
-        Vertex positions[] = {
-            Vector2(-0.5f, -0.5f),   Vector2(0.0f, 0.0f),
-            Vector2( 0.5f, -0.5f),   Vector2(1.0f, 0.0f),
-            Vector2( 0.5f,  0.5f),   Vector2(1.0f, 1.0f),
-            Vector2(-0.5f,  0.5f),   Vector2(0.0f, 1.0f)
-        };
-
-        unsigned int indices[] = {
-            0, 1, 2,
-            2, 3, 0
-        };
-
         std::shared_ptr<Camera> cam = std::make_shared<Camera>(0.0f, float(window_width), 0.0f, float(window_height), -1.0f, 1.0f);
         
-        std::shared_ptr<Shader> shader = std::make_shared<Shader>("res/shaders/basic.shader");
-
-        std::shared_ptr<Material> mat = std::make_shared<Material>(shader);
-
-        std::vector<Vertex> pos(positions, positions + sizeof(positions) / sizeof(Vertex));
-        std::vector<unsigned int> ind(indices, indices + sizeof(indices) / sizeof(unsigned int));
-        std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(pos, ind);
-
         std::shared_ptr<Texture> texture = std::make_shared<Texture>("res/textures/hearth.png");
 
-        mat->set_texture("u_Texture", texture);
-
-        Transform transform = Transform(Vector2(0.0f), 0.0f, Vector2(200.0f));
+        std::shared_ptr<TextureRenderer> tex_renderer = std::make_shared<TextureRenderer>(texture, Transform(Vector2(window_width * 0.5f, window_height * 0.5f), 0.0f, Vector2(100.0f)));
 
         while (!glfwWindowShouldClose(window)) {
             GL_CALL(glClearColor(0.07f, 0.13f, 0.17f, 1.0f));
@@ -101,28 +81,26 @@ int main(void) {
             ImGui::NewFrame();
 
             {
-                Vector2 translation = transform.get_position();
-                float rotation = transform.get_rotation();
-                Vector2 scale = transform.get_scale();
+                Transform& t = tex_renderer->get_transform();
+                Vector2 translation = t.get_position();
+                float rotation = t.get_rotation();
+                Vector2 scale = t.get_scale();
                 ImGui::Begin("Properties");
                 ImGui::SliderFloat2("Translation", &translation.x, 0.0f, float(window_width));
                 ImGui::SliderFloat2("Scale", &scale.x, 0.0f, 300.0f);
                 ImGui::SliderFloat("Rotation", &rotation, 0.0f, 360.0f);
-                transform.set_position(translation);
-                transform.set_rotation(rotation);
-                transform.set_scale(scale);
+                tex_renderer->set_position(translation);
+                tex_renderer->set_rotation(rotation);
+                tex_renderer->set_scale(scale);
 
                 ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
                 ImGui::End();
             }
 
             float time = float(glfwGetTime());
-            mat->set_vector4("u_Color", Vector4(0.5f + sinf(time) * 0.5f, 0.5f + cosf(time) * 0.5f, 0.5f + sinf(time * 3.14f) * 0.5f, 1.0f));
+            tex_renderer->get_material()->set_vector4("u_Color", Vector4(0.5f + sinf(time) * 0.5f, 0.5f + cosf(time) * 0.5f, 0.5f + sinf(time * 3.14f) * 0.5f, 1.0f));
 
-            Matrix mvp = cam->get_view_projection() * transform.get_matrix();
-            mat->set_matrix("u_MVP", mvp);
-
-            mesh->draw(mat);
+            tex_renderer->draw(cam);
 
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

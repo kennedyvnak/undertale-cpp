@@ -21,3 +21,7 @@ void Camera::set_bounds(float left, float right, float top, float bottom, float 
 	_projection = glm::ortho(left, right, top, bottom, near, far);
 	recalculate_matrix();
 }
+
+void Camera::set_position(Vector2 position) { _transform.set_position(position); recalculate_matrix(); }
+void Camera::set_rotation(float rotation) { _transform.set_rotation(rotation); recalculate_matrix(); }
+void Camera::set_scale(Vector2 scale) { _transform.set_scale(scale); recalculate_matrix(); }
