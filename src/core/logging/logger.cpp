@@ -1,5 +1,8 @@
 #include "logger.h"
 #include <iostream>
+#ifdef _WIN32
+#include "console_color.h"
+#endif // _WIN32
 
 Logger* Logger::_instance;
 
@@ -35,11 +38,19 @@ void Logger::ilog(const Log& log) {
 		break;
 	case 1:
 		// WARNING
+#ifdef _WIN32
+		std::cout << dye::yellow(std::vformat("WAR({:%T}): {}", std::make_format_args(log.time, log.message))) << std::endl;
+#else
 		std::cout << std::vformat("WAR({:%T}): {}", std::make_format_args(log.time, log.message)) << std::endl;
+#endif // _WIN32
 		break;
 	case 2:
 		// ERROR
+#ifdef _WIN32
+		std::cout << dye::red(std::vformat("ERR({:%T}): {}", std::make_format_args(log.time, log.message))) << std::endl;
+#else 
 		std::cout << std::vformat("ERR({:%T}): {}", std::make_format_args(log.time, log.message)) << std::endl;
+#endif // _WIN32
 		break;
 	}
 }
