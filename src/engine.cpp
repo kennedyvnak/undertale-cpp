@@ -9,6 +9,7 @@
 #include <imgui_impl_opengl3.h>
 
 #include "utility/open_gl_handler.h"
+#include "core/rendering/window.h"
 #include "core/rendering/vertex_buffer.h"
 #include "core/rendering/index_buffer.h"
 #include "core/rendering/vertex_array.h"
@@ -22,98 +23,100 @@
 #include "entities/rendering/texture_renderer.h"
 
 int main(void) {
-    int window_width = 16 * 64;
-    int window_height = 9 * 64;
-    GLFWwindow* window;
+	std::shared_ptr<Window> window = std::make_shared<Window>("Undertale Clone in C++");
+	if (window->init() == -1)
+		return -1;
 
-    if (!glfwInit())
-        return -1;
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;    // Enable Gamepad Controls
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	ImGui::StyleColorsDark();
 
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+	ImGui_ImplGlfw_InitForOpenGL(window->get_ptr(), true);
+	ImGui_ImplOpenGL3_Init("#version 330");
 
-    window = glfwCreateWindow(window_width, window_height, "Undertale", NULL, NULL);
-    if (!window) {
-        glfwTerminate();
-        return -1;
-    }
+	if (glewInit() != GLEW_OK)
+		std::cout << "Error on glew initialization!" << std::endl;
 
-    glfwMakeContextCurrent(window);
+	GL_CALL(glEnable(GL_BLEND));
+	GL_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-    glfwSwapInterval(1);
+	std::cout << "Initialize OpenGL " << glGetString(GL_VERSION) << "\n.\n." << std::endl;
 
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;    // Enable Gamepad Controls
+	{
+		std::shared_ptr<Camera> cam = std::make_shared<Camera>(0.0f, float(window->get_width()), 0.0f, float(window->get_height()), -1.0f, 1.0f);
 
-    ImGui::StyleColorsDark();
+		std::shared_ptr<Texture> texture = std::make_shared<Texture>("res/textures/hearth.png");
 
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 330");
+		std::shared_ptr<TextureRenderer> tex_renderer = std::make_shared<TextureRenderer>(texture, Transform(glm::vec2(window->get_width() * 0.5f, window->get_height() * 0.5f), 0.0f, glm::vec2(100.0f)));
 
-    if (glewInit() != GLEW_OK)
-        std::cout << "Error on glew initialization!" << std::endl;
+		while (!window->should_close()) {
+			GL_CALL(glClearColor(0.07f, 0.13f, 0.17f, 1.0f));
+			GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
 
-    GL_CALL(glEnable(GL_BLEND));
-    GL_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplGlfw_NewFrame();
+			ImGui::NewFrame();
 
-    std::cout << "Initialize OpenGL " << glGetString(GL_VERSION) << "\n.\n." << std::endl;
+			{
+				int width = window->get_width();
+				int height = window->get_height();
+				bool fullscreen = window->get_fullscreen();
 
-    {
-        std::shared_ptr<Camera> cam = std::make_shared<Camera>(0.0f, float(window_width), 0.0f, float(window_height), -1.0f, 1.0f);
+				ImGui::Begin("Configs");
+				ImGui::SliderInt("Width", &width, 640, 1366);
+				ImGui::SliderInt("Heght", &height, 300, 768);
+				ImGui::Checkbox("Fullscreen", &fullscreen);
+				ImGui::End();
 
-        std::shared_ptr<Texture> texture = std::make_shared<Texture>("res/textures/hearth.png");
+				if (width != window->get_width()) {
+					window->set_width(width);
+				}
+				if (height != window->get_height()) {
+					window->set_height(height);
+				}
+				if (fullscreen != window->get_fullscreen()) {
+					window->set_fullscreen(fullscreen);
+				}
+			}
 
-        std::shared_ptr<TextureRenderer> tex_renderer = std::make_shared<TextureRenderer>(texture, Transform(glm::vec2(window_width * 0.5f, window_height * 0.5f), 0.0f, glm::vec2(100.0f)));
+			{
+				Transform& t = tex_renderer->get_transform();
+				glm::vec2 translation = t.get_position();
+				float rotation = t.get_rotation();
+				glm::vec2 scale = t.get_scale();
+				ImGui::Begin("Properties");
+				ImGui::SliderFloat2("Translation", &translation.x, 0.0f, float(window->get_width()));
+				ImGui::SliderFloat2("Scale", &scale.x, 0.0f, 300.0f);
+				ImGui::SliderFloat("Rotation", &rotation, 0.0f, 360.0f);
+				tex_renderer->set_position(translation);
+				tex_renderer->set_rotation(rotation);
+				tex_renderer->set_scale(scale);
 
-        while (!glfwWindowShouldClose(window)) {
-            GL_CALL(glClearColor(0.07f, 0.13f, 0.17f, 1.0f));
-            GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
+				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+				ImGui::End();
+			}
 
-            ImGui_ImplOpenGL3_NewFrame();
-            ImGui_ImplGlfw_NewFrame();
-            ImGui::NewFrame();
+			float time = float(glfwGetTime());
+			tex_renderer->get_material()->set_vector4("u_Color", glm::vec4(0.5f + sinf(time) * 0.5f, 0.5f + cosf(time) * 0.5f, 0.5f + sinf(time * 3.14f) * 0.5f, 1.0f));
 
-            {
-                Transform& t = tex_renderer->get_transform();
-                glm::vec2 translation = t.get_position();
-                float rotation = t.get_rotation();
-                glm::vec2 scale = t.get_scale();
-                ImGui::Begin("Properties");
-                ImGui::SliderFloat2("Translation", &translation.x, 0.0f, float(window_width));
-                ImGui::SliderFloat2("Scale", &scale.x, 0.0f, 300.0f);
-                ImGui::SliderFloat("Rotation", &rotation, 0.0f, 360.0f);
-                tex_renderer->set_position(translation);
-                tex_renderer->set_rotation(rotation);
-                tex_renderer->set_scale(scale);
+			tex_renderer->draw(cam);
 
-                ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-                ImGui::End();
-            }
+			ImGui::Render();
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-            float time = float(glfwGetTime());
-            tex_renderer->get_material()->set_vector4("u_Color", glm::vec4(0.5f + sinf(time) * 0.5f, 0.5f + cosf(time) * 0.5f, 0.5f + sinf(time * 3.14f) * 0.5f, 1.0f));
+			window->swap_buffers();
 
-            tex_renderer->draw(cam);
+			glfwPollEvents();
+		}
+	}
 
-            ImGui::Render();
-            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 
-            glfwSwapBuffers(window);
-
-            glfwPollEvents();
-        }
-    }
-
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-
-    glfwTerminate();
-    return 0;
+	return 0;
 }
