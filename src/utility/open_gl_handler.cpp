@@ -15,6 +15,6 @@ bool gl_log_call(const char* function, const char* file, int line) {
 }
 
 void glfw_error_callback(int error_code, const char* description) {
-    LOG_ERROR_FORMAT("[GLFW Error] ({}): {}", error_code, description);
+    LOG_ERROR_FORMAT("[GLFW Error] ({}): {}.", error_code, description);
     __debugbreak();
 }

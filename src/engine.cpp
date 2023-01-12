@@ -30,7 +30,7 @@ int main(void) {
 
 	glfwSetErrorCallback(glfw_error_callback);
 
-	std::shared_ptr<Window> window = std::make_shared<Window>("Undertale Clone in C++");
+	std::shared_ptr<Window> window = std::make_shared<Window>("Undertale");
 	if (window->init() == -1)
 		return -1;
 
@@ -80,7 +80,7 @@ int main(void) {
 				ImGui::SliderInt("Width", &width, 640, 1366);
 				ImGui::SliderInt("Heght", &height, 300, 768);
 				ImGui::Checkbox("Fullscreen", &fullscreen);
-				ImGui::Checkbox("V-sync", &vsync);
+				ImGui::Checkbox("V-Sync", &vsync);
 				ImGui::End();
 
 				if (width != window->get_width()) {
