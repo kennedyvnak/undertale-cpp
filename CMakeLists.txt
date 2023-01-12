@@ -33,3 +33,9 @@ elseif(CMAKE_BUILD_TYPE MATCHES Release)
 endif()
 
 target_link_libraries(${PROJECT_NAME} ${CONAN_LIBS})
+
+add_custom_command(
+        TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                ${CMAKE_SOURCE_DIR}/res/
+                ${CMAKE_CURRENT_BINARY_DIR}/bin/res/)
