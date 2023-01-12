@@ -18,7 +18,7 @@
 #include "core/rendering/material.h"
 #include "core/rendering/mesh.h"
 #include "core/rendering/texture.h"
-#include "core/camera/camera.h"
+#include "core/rendering/camera.h"
 #include "core/components/transform.h"
 #include "entities/rendering/texture_renderer.h"
 

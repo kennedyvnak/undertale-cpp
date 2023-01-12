@@ -2,8 +2,8 @@
 #include "core/rendering/mesh.h"
 #include "core/rendering/material.h"
 #include "core/rendering/shader.h"
+#include "core/rendering/camera.h"
 #include "core/components/transform.h"
-#include "core/camera/camera.h"
 
 std::shared_ptr<Material> TextureRenderer::get_default_material() {
 	std::shared_ptr<Shader> shader = std::make_shared<Shader>("res/shaders/basic.shader");
