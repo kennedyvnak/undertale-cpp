@@ -22,8 +22,10 @@
 #include "core/components/transform.h"
 #include "core/assets/asset_database.h"
 #include "entities/rendering/texture_renderer.h"
+#include "core/logging/logger.h"
 
 int main(void) {
+	Logger::initialize_logger();
 	AssetDatabase::load_database();
 
 	std::shared_ptr<Window> window = std::make_shared<Window>("Undertale Clone in C++");
@@ -42,12 +44,14 @@ int main(void) {
 	ImGui_ImplOpenGL3_Init("#version 330");
 
 	if (glewInit() != GLEW_OK)
-		std::cout << "Error on glew initialization!" << std::endl;
+		LOG_ERROR("Glew initialization failed.");
 
 	GL_CALL(glEnable(GL_BLEND));
 	GL_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-	std::cout << "Initialize OpenGL " << glGetString(GL_VERSION) << "\n.\n." << std::endl;
+	GL_CALL(std::string gl_version = (char*)glGetString(GL_VERSION));
+	GL_CALL(std::string gl_renderer = (char*)glGetString(GL_RENDERER));
+	LOG_FORMAT("Initialize OpenGL | Version: {} | Renderer: {}", gl_version, gl_renderer);
 
 	{
 		std::shared_ptr<Camera> cam = std::make_shared<Camera>(0.0f, float(window->get_width()), 0.0f, float(window->get_height()), -1.0f, 1.0f);

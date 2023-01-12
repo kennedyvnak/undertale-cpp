@@ -15,7 +15,7 @@ IndexBuffer::~IndexBuffer() {
 }
 
 void IndexBuffer::set_buffer(const std::vector<unsigned int>& indices) {
-	ASSERT(sizeof(unsigned int) == sizeof(GLuint));
+	ASSERT(sizeof(unsigned int) == sizeof(GLuint), "bytes lenght of unsigned int isn't equal to bytes lenght of GLuint.");
 
 	if (_id)
 		GL_CALL(glDeleteBuffers(1, &_id));

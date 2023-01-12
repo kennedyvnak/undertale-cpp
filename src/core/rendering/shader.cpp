@@ -1,9 +1,9 @@
 #include "shader.h"
 #include <GL/glew.h>
-#include <iostream> 
 #include <fstream>
 #include <sstream>
 #include "utility/open_gl_handler.h"
+#include "core/logging/logger.h"
 
 Shader::Shader(const std::string& filename)
     : Asset(filename), _id(0) {
@@ -30,7 +30,7 @@ int Shader::get_uniform_location(const std::string& name) const {
     }
 
     GL_CALL(int location = glGetUniformLocation(_id, name.c_str()));
-    ASSERT(location != -1);
+    ASSERT_FORMAT(location != -1, "Uniform {} doesn't exist.", name);
     _uniform_location_cache[name] = location;
     return location;
 }
@@ -98,8 +98,7 @@ unsigned int Shader::compile_shader(unsigned int type, const std::string& source
         GL_CALL(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length));
         char* message = (char*)_malloca(length * sizeof(char));
         GL_CALL(glGetShaderInfoLog(id, length, &length, message));
-        std::cout << "Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader! " << std::endl;
-        std::cout << message << std::endl;
+        LOG_ERROR_FORMAT("Failed to compile {} shader. '{}'", (type == GL_VERTEX_SHADER ? "vertex" : "fragment"), message);
         GL_CALL(glDeleteShader(id));
         return 0;
     }

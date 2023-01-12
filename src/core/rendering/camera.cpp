@@ -1,5 +1,4 @@
 #include "camera.h"
-#include <iostream>
 
 void Camera::recalculate_matrix() {
 	_view_projection = _projection * _transform.get_matrix();
