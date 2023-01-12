@@ -20,9 +20,12 @@
 #include "core/rendering/texture.h"
 #include "core/rendering/camera.h"
 #include "core/components/transform.h"
+#include "core/assets/asset_database.h"
 #include "entities/rendering/texture_renderer.h"
 
 int main(void) {
+	AssetDatabase::load_database();
+
 	std::shared_ptr<Window> window = std::make_shared<Window>("Undertale Clone in C++");
 	if (window->init() == -1)
 		return -1;
@@ -49,7 +52,7 @@ int main(void) {
 	{
 		std::shared_ptr<Camera> cam = std::make_shared<Camera>(0.0f, float(window->get_width()), 0.0f, float(window->get_height()), -1.0f, 1.0f);
 
-		std::shared_ptr<Texture> texture = std::make_shared<Texture>("res/textures/hearth.png");
+		std::shared_ptr<Texture> texture = AssetDatabase::load_texture("res/textures/hearth.png");
 
 		std::shared_ptr<TextureRenderer> tex_renderer = std::make_shared<TextureRenderer>(texture, Transform(glm::vec2(window->get_width() * 0.5f, window->get_height() * 0.5f), 0.0f, glm::vec2(100.0f)));
 

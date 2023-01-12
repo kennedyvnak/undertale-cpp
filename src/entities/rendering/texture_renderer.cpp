@@ -4,10 +4,10 @@
 #include "core/rendering/shader.h"
 #include "core/rendering/camera.h"
 #include "core/components/transform.h"
+#include "core/assets/asset_database.h"
 
 std::shared_ptr<Material> TextureRenderer::get_default_material() {
-	std::shared_ptr<Shader> shader = std::make_shared<Shader>("res/shaders/basic.shader");
-	return std::make_shared<Material>(shader);
+	return std::make_shared<Material>(AssetDatabase::load_shader("res/shaders/default.shader"));
 }
 
 TextureRenderer::TextureRenderer()

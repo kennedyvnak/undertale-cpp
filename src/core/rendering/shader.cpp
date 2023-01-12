@@ -6,7 +6,7 @@
 #include "utility/open_gl_handler.h"
 
 Shader::Shader(const std::string& filename)
-    : _filepath(filename), _id(0) {
+    : Asset(filename), _id(0) {
     ShaderProgramSource source = parse_shader(filename);
     _id = create_shader(source.vertex_source, source.fragment_source);
 }
@@ -14,7 +14,6 @@ Shader::Shader(const std::string& filename)
 Shader::~Shader() {
     GL_CALL(glDeleteProgram(_id));
 }
-
 
 void Shader::bind() const {
     GL_CALL(glUseProgram(_id));
@@ -61,7 +60,7 @@ void Shader::set_uniform_matrix(const std::string& name, const glm::mat4& value)
 }
 
 ShaderProgramSource Shader::parse_shader(const std::string& filename) {
-    std::ifstream stream(_filepath);
+    std::ifstream stream(filename);
 
     enum class ShaderType {
         NONE = -1, VERTEX = 0, FRAGMENT = 1

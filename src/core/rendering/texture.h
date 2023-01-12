@@ -1,11 +1,11 @@
 #pragma once
 
 #include <string>
+#include "core/assets/asset.h"
 
-class Texture {
+class Texture : public Asset {
 private:
 	unsigned int _id;
-	std::string _filepath;
 	unsigned char* _local_buffer;
 	int _width, _height, _bpp;
 

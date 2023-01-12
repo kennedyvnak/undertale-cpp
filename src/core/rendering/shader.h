@@ -4,15 +4,15 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <unordered_map>
+#include "core/assets/asset.h"
 
 struct ShaderProgramSource {
 	std::string vertex_source;
 	std::string fragment_source;
 };
 
-class Shader {
+class Shader : public Asset {
 private:
-	std::string _filepath;
 	unsigned int _id;
 	mutable std::unordered_map<std::string, int> _uniform_location_cache;
 
