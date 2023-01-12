@@ -4,7 +4,7 @@ project(UndertaleCpp
         DESCRIPTION "A undertale copy using c++" 
         LANGUAGES CXX)
 
-set (CMAKE_CXX_STANDARD 20)
+set (CMAKE_CXX_STANDARD 23)
 
 add_definitions(-DGLFW_INCLUDE_NONE -DGLEW_STATIC -DSTB_IMAGE_IMPLEMENTATION)
 
