@@ -1,6 +1,7 @@
 #include "index_buffer.h"
 
 #include "utility/open_gl_handler.h"
+#include "core/logging/logger.h"
 
 IndexBuffer::IndexBuffer()
 	: _id(0) { }

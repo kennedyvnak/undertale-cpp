@@ -13,12 +13,14 @@ public:
 	void set_width(int width);
 	void set_height(int height);
 	void set_fullscreen(bool fullscreen);
+	void set_vsync(bool enabled);
 
 	inline const std::string& get_title() const& { return _title; }
-	inline int get_width() { return _width; }
-	inline int get_height() { return _height; }
-	inline bool get_fullscreen() { return _fullscreen; }
-	GLFWwindow* get_ptr() { return _ptr; }
+	inline int get_width() const { return _width; }
+	inline int get_height() const { return _height; }
+	inline bool get_fullscreen() const { return _fullscreen; }
+	inline bool get_vsync() const { return _vsync; }
+	GLFWwindow* get_ptr() const { return _ptr; }
 
 	void swap_buffers();
 	bool should_close();
@@ -26,6 +28,6 @@ public:
 private:
 	std::string _title;
 	int _width, _height;
-	bool _fullscreen;
+	bool _fullscreen, _vsync;
 	GLFWwindow* _ptr;
 };

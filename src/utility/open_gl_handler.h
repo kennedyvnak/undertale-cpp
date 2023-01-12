@@ -1,7 +1,6 @@
 #pragma once
 
 #include <gl/glew.h>
-#include "core/logging/logger.h"
 
 #define DEBUG_OPEN_GL
 
@@ -13,3 +12,5 @@
 
 void gl_clear_error();
 bool gl_log_call(const char* function, const char* file, int line);
+
+void glfw_error_callback(int error_code, const char* description);

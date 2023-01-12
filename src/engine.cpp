@@ -28,6 +28,8 @@ int main(void) {
 	Logger::initialize_logger();
 	AssetDatabase::load_database();
 
+	glfwSetErrorCallback(glfw_error_callback);
+
 	std::shared_ptr<Window> window = std::make_shared<Window>("Undertale Clone in C++");
 	if (window->init() == -1)
 		return -1;
@@ -45,7 +47,7 @@ int main(void) {
 
 	if (glewInit() != GLEW_OK)
 		LOG_ERROR("Glew initialization failed.");
-
+	
 	GL_CALL(glEnable(GL_BLEND));
 	GL_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
@@ -72,11 +74,13 @@ int main(void) {
 				int width = window->get_width();
 				int height = window->get_height();
 				bool fullscreen = window->get_fullscreen();
+				bool vsync = window->get_vsync();
 
 				ImGui::Begin("Configs");
 				ImGui::SliderInt("Width", &width, 640, 1366);
 				ImGui::SliderInt("Heght", &height, 300, 768);
 				ImGui::Checkbox("Fullscreen", &fullscreen);
+				ImGui::Checkbox("V-sync", &vsync);
 				ImGui::End();
 
 				if (width != window->get_width()) {
@@ -87,6 +91,9 @@ int main(void) {
 				}
 				if (fullscreen != window->get_fullscreen()) {
 					window->set_fullscreen(fullscreen);
+				}
+				if (vsync != window->get_vsync()) {
+					window->set_vsync(vsync);
 				}
 			}
 

@@ -2,6 +2,7 @@
 
 #include <GL/glew.h>
 #include <vector>
+#include "core/logging/logger.h"
 
 #include "utility/open_gl_handler.h"
 

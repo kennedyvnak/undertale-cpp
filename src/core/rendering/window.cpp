@@ -1,11 +1,7 @@
 #include "window.h"
 
-Window::Window(const std::string title) : _title(title) {
-	_fullscreen = false;
-	_width = 0;
-	_height = 0;
-	_ptr = nullptr;
-}
+Window::Window(const std::string title)
+	: _title(title), _fullscreen(false), _width(0), _height(0), _ptr(nullptr), _vsync(false) { }
 
 Window::~Window() {
 	glfwTerminate();
@@ -40,8 +36,8 @@ int Window::init() {
 	}
 
 	glfwMakeContextCurrent(_ptr);
-	
-	glfwSwapInterval(1);
+
+	glfwSwapInterval(_vsync);
 
 	return 0;
 }
@@ -65,6 +61,12 @@ void Window::set_fullscreen(bool fullscreen) {
 	const GLFWvidmode* vidmode = glfwGetVideoMode(monitor);
 
 	glfwSetWindowMonitor(_ptr, _fullscreen ? monitor : NULL, 0, 0, vidmode->width, vidmode->height, vidmode->refreshRate);
+}
+
+void Window::set_vsync(bool enabled) {
+	_vsync = enabled;
+	if (_ptr)
+		glfwSwapInterval(enabled);
 }
 
 void Window::swap_buffers() {
