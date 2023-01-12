@@ -1,37 +1,38 @@
 #pragma once
 
-#include "engine.h"
-#include <unordered_map>
+#include <string>
+#include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <unordered_map>
 
 struct ShaderProgramSource {
-	String vertex_source;
-	String fragment_source;
+	std::string vertex_source;
+	std::string fragment_source;
 };
 
 class Shader {
 private:
-	String _filepath;
+	std::string _filepath;
 	unsigned int _id;
-	mutable std::unordered_map<String, int> _uniform_location_cache;
+	mutable std::unordered_map<std::string, int> _uniform_location_cache;
 
-	ShaderProgramSource parse_shader(const String& filename);
-	unsigned int compile_shader(unsigned int type, const String& source);
-	unsigned int create_shader(const String& vert_shader_source, const String& frag_shader_source);
-	
-	int get_uniform_location(const String& name) const;
+	ShaderProgramSource parse_shader(const std::string& filename);
+	unsigned int compile_shader(unsigned int type, const std::string& source);
+	unsigned int create_shader(const std::string& vert_shader_source, const std::string& frag_shader_source);
+
+	int get_uniform_location(const std::string& name) const;
 
 public:
-	Shader(const String& filename);
+	Shader(const std::string& filename);
 	~Shader();
 
 	void bind() const;
 	void unbind() const;
 
-	void set_uniform_int(const String& name, int value);
-	void set_uniform_float(const String& name, float value);
-	void set_uniform_vector2(const String& name, const Vector2& value);
-	void set_uniform_vector3(const String& name, const Vector3& value);
-	void set_uniform_vector4(const String& name, const Vector4& value);
-	void set_uniform_matrix(const String& name, const Matrix& value);
+	void set_uniform_int(const std::string& name, int value);
+	void set_uniform_float(const std::string& name, float value);
+	void set_uniform_vector2(const std::string& name, const glm::vec2& value);
+	void set_uniform_vector3(const std::string& name, const glm::vec3& value);
+	void set_uniform_vector4(const std::string& name, const glm::vec4& value);
+	void set_uniform_matrix(const std::string& name, const glm::mat4& value);
 };

@@ -10,11 +10,11 @@ std::shared_ptr<Material> TextureRenderer::get_default_material() {
 	return std::make_shared<Material>(shader);
 }
 
-TextureRenderer::TextureRenderer() 
+TextureRenderer::TextureRenderer()
 	: _texture(nullptr), _material(get_default_material()), _mesh(Mesh::make_quad_mesh()), _transform() {
 }
 
-TextureRenderer::TextureRenderer(std::shared_ptr<Texture> texture) 
+TextureRenderer::TextureRenderer(std::shared_ptr<Texture> texture)
 	: _texture(texture), _material(get_default_material()), _mesh(Mesh::make_quad_mesh()), _transform() {
 }
 
@@ -22,7 +22,7 @@ TextureRenderer::TextureRenderer(std::shared_ptr<Texture> texture, const Transfo
 	: _texture(texture), _material(get_default_material()), _mesh(Mesh::make_quad_mesh()), _transform(transform) {
 }
 
-TextureRenderer::TextureRenderer(std::shared_ptr<Texture> texture, std::shared_ptr<Material> material) 
+TextureRenderer::TextureRenderer(std::shared_ptr<Texture> texture, std::shared_ptr<Material> material)
 	: _texture(texture), _material(material), _mesh(Mesh::make_quad_mesh()), _transform() {
 }
 
@@ -32,8 +32,8 @@ TextureRenderer::TextureRenderer(std::shared_ptr<Texture> texture, std::shared_p
 
 TextureRenderer::~TextureRenderer() { }
 
-void TextureRenderer::set_position(Vector2 position) { _transform.set_position(position); }
-void TextureRenderer::set_scale(Vector2 scale) { _transform.set_scale(scale); }
+void TextureRenderer::set_position(glm::vec2 position) { _transform.set_position(position); }
+void TextureRenderer::set_scale(glm::vec2 scale) { _transform.set_scale(scale); }
 void TextureRenderer::set_rotation(float rotation) { _transform.set_rotation(rotation); }
 
 void TextureRenderer::draw(std::shared_ptr<Camera> cam) {

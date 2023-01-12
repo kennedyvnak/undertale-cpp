@@ -1,13 +1,11 @@
+#include "shader.h"
 #include <GL/glew.h>
-
 #include <iostream> 
 #include <fstream>
 #include <sstream>
-
-#include "shader.h"
 #include "utility/open_gl_handler.h"
 
-Shader::Shader(const String& filename)
+Shader::Shader(const std::string& filename)
     : _filepath(filename), _id(0) {
     ShaderProgramSource source = parse_shader(filename);
     _id = create_shader(source.vertex_source, source.fragment_source);
@@ -26,7 +24,7 @@ void Shader::unbind() const {
     GL_CALL(glUseProgram(0));
 }
 
-int Shader::get_uniform_location(const String& name) const {
+int Shader::get_uniform_location(const std::string& name) const {
     auto location_search = _uniform_location_cache.find(name);
     if (location_search != _uniform_location_cache.end()) {
         return location_search->second;
@@ -38,45 +36,45 @@ int Shader::get_uniform_location(const String& name) const {
     return location;
 }
 
-void Shader::set_uniform_int(const String& name, int value) {
+void Shader::set_uniform_int(const std::string& name, int value) {
     GL_CALL(glUniform1i(get_uniform_location(name), value));
 }
 
-void Shader::set_uniform_float(const String& name, float value) {
+void Shader::set_uniform_float(const std::string& name, float value) {
     GL_CALL(glUniform1f(get_uniform_location(name), value));
 }
 
-void Shader::set_uniform_vector2(const String& name, const Vector2& value) {
+void Shader::set_uniform_vector2(const std::string& name, const glm::vec2& value) {
     GL_CALL(glUniform2f(get_uniform_location(name), value.x, value.y));
 }
 
-void Shader::set_uniform_vector3(const String& name, const Vector3& value) {
+void Shader::set_uniform_vector3(const std::string& name, const glm::vec3& value) {
     GL_CALL(glUniform3f(get_uniform_location(name), value.x, value.y, value.z));
 }
 
-void Shader::set_uniform_vector4(const String& name, const Vector4& value) {
+void Shader::set_uniform_vector4(const std::string& name, const glm::vec4& value) {
     GL_CALL(glUniform4f(get_uniform_location(name), value.x, value.y, value.z, value.w));
 }
 
-void Shader::set_uniform_matrix(const String& name, const Matrix& value) {
+void Shader::set_uniform_matrix(const std::string& name, const glm::mat4& value) {
     GL_CALL(glUniformMatrix4fv(get_uniform_location(name), 1, GL_FALSE, glm::value_ptr(value)));
 }
 
-ShaderProgramSource Shader::parse_shader(const String& filename) {
+ShaderProgramSource Shader::parse_shader(const std::string& filename) {
     std::ifstream stream(_filepath);
 
     enum class ShaderType {
         NONE = -1, VERTEX = 0, FRAGMENT = 1
     };
 
-    String line;
+    std::string line;
     std::stringstream ss[2];
     ShaderType type = ShaderType::NONE;
     while (getline(stream, line)) {
-        if (line.find("#shader") != String::npos) {
-            if (line.find("vertex") != String::npos) {
+        if (line.find("#shader") != std::string::npos) {
+            if (line.find("vertex") != std::string::npos) {
                 type = ShaderType::VERTEX;
-            } else if (line.find("fragment") != String::npos) {
+            } else if (line.find("fragment") != std::string::npos) {
                 type = ShaderType::FRAGMENT;
             }
         } else {
@@ -87,7 +85,7 @@ ShaderProgramSource Shader::parse_shader(const String& filename) {
     return { ss[0].str(), ss[1].str() };
 }
 
-unsigned int Shader::compile_shader(unsigned int type, const String& source) {
+unsigned int Shader::compile_shader(unsigned int type, const std::string& source) {
     GL_CALL(unsigned int id = glCreateShader(type));
 
     const char* src = source.c_str();
@@ -110,7 +108,7 @@ unsigned int Shader::compile_shader(unsigned int type, const String& source) {
     return id;
 }
 
-unsigned int Shader::create_shader(const String& vert_shader_source, const String& frag_shader_source) {
+unsigned int Shader::create_shader(const std::string& vert_shader_source, const std::string& frag_shader_source) {
     GL_CALL(unsigned int program = glCreateProgram());
     unsigned int vertex_shader = compile_shader(GL_VERTEX_SHADER, vert_shader_source);
     unsigned int fragment_shader = compile_shader(GL_FRAGMENT_SHADER, frag_shader_source);

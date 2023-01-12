@@ -1,16 +1,16 @@
 #pragma once
 
-#include "engine.h"
+#include <string>
 
 class Texture {
 private:
 	unsigned int _id;
-	String _filepath;
+	std::string _filepath;
 	unsigned char* _local_buffer;
 	int _width, _height, _bpp;
 
 public:
-	Texture(const String& path);
+	Texture(const std::string& path);
 	~Texture();
 
 	void bind(unsigned int slot) const;

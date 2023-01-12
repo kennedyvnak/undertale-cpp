@@ -7,7 +7,7 @@ Material::Material(std::shared_ptr<Shader> shader)
 
 Material::Material(const Material& other) {
 	_shader = other._shader;
-	
+
 	_uniforms_int = other._uniforms_int;
 	_uniforms_float = other._uniforms_float;
 	_uniforms_vector2 = other._uniforms_vector2;

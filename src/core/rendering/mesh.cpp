@@ -1,13 +1,12 @@
 #include "mesh.h"
 #include "shader.h"
 #include "material.h"
-#include "core/components/transform.h"
 
 std::vector<Vertex> Mesh::quad_vertices = {
-	{ Vector2(-0.5f, -0.5f), Vector2(0.0f, 0.0f) },
-	{ Vector2( 0.5f, -0.5f), Vector2(1.0f, 0.0f) },
-	{ Vector2( 0.5f,  0.5f), Vector2(1.0f, 1.0f) },
-	{ Vector2(-0.5f,  0.5f), Vector2(0.0f, 1.0f) }
+	{ glm::vec2(-0.5f, -0.5f), glm::vec2(0.0f, 0.0f) },
+	{ glm::vec2(0.5f, -0.5f), glm::vec2(1.0f, 0.0f) },
+	{ glm::vec2(0.5f,  0.5f), glm::vec2(1.0f, 1.0f) },
+	{ glm::vec2(-0.5f,  0.5f), glm::vec2(0.0f, 1.0f) }
 };
 
 std::vector<unsigned int> Mesh::quad_indices = {

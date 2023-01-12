@@ -1,6 +1,5 @@
-#include "engine.h"
-
 #include <memory>
+#include <string>
 #include <GLFW/glfw3.h>
 #include <gl/glew.h>
 #include <glm/glm.hpp>
@@ -67,10 +66,10 @@ int main(void) {
 
     {
         std::shared_ptr<Camera> cam = std::make_shared<Camera>(0.0f, float(window_width), 0.0f, float(window_height), -1.0f, 1.0f);
-        
+
         std::shared_ptr<Texture> texture = std::make_shared<Texture>("res/textures/hearth.png");
 
-        std::shared_ptr<TextureRenderer> tex_renderer = std::make_shared<TextureRenderer>(texture, Transform(Vector2(window_width * 0.5f, window_height * 0.5f), 0.0f, Vector2(100.0f)));
+        std::shared_ptr<TextureRenderer> tex_renderer = std::make_shared<TextureRenderer>(texture, Transform(glm::vec2(window_width * 0.5f, window_height * 0.5f), 0.0f, glm::vec2(100.0f)));
 
         while (!glfwWindowShouldClose(window)) {
             GL_CALL(glClearColor(0.07f, 0.13f, 0.17f, 1.0f));
@@ -82,9 +81,9 @@ int main(void) {
 
             {
                 Transform& t = tex_renderer->get_transform();
-                Vector2 translation = t.get_position();
+                glm::vec2 translation = t.get_position();
                 float rotation = t.get_rotation();
-                Vector2 scale = t.get_scale();
+                glm::vec2 scale = t.get_scale();
                 ImGui::Begin("Properties");
                 ImGui::SliderFloat2("Translation", &translation.x, 0.0f, float(window_width));
                 ImGui::SliderFloat2("Scale", &scale.x, 0.0f, 300.0f);
@@ -98,7 +97,7 @@ int main(void) {
             }
 
             float time = float(glfwGetTime());
-            tex_renderer->get_material()->set_vector4("u_Color", Vector4(0.5f + sinf(time) * 0.5f, 0.5f + cosf(time) * 0.5f, 0.5f + sinf(time * 3.14f) * 0.5f, 1.0f));
+            tex_renderer->get_material()->set_vector4("u_Color", glm::vec4(0.5f + sinf(time) * 0.5f, 0.5f + cosf(time) * 0.5f, 0.5f + sinf(time * 3.14f) * 0.5f, 1.0f));
 
             tex_renderer->draw(cam);
 

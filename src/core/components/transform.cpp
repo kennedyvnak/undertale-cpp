@@ -1,24 +1,24 @@
 #include "transform.h"
 
 void Transform::recalculate_matrix() {
-	_matrix = Matrix(1.0f);
-	_matrix = glm::translate(_matrix, Vector3(_position, 0.0f));
-	_matrix = glm::rotate(_matrix, glm::radians(_rotation), Vector3(0.0f, 0.0f, 1.0f));
-	_matrix = glm::scale(_matrix, Vector3(_scale, 0.0f));
+	_matrix = glm::mat4(1.0f);
+	_matrix = glm::translate(_matrix, glm::vec3(_position, 0.0f));
+	_matrix = glm::rotate(_matrix, glm::radians(_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+	_matrix = glm::scale(_matrix, glm::vec3(_scale, 0.0f));
 }
 
 Transform::Transform() {
-	Vector2 p = Vector2(0.0f);
+	glm::vec2 p = glm::vec2(0.0f);
 	float r = 0.0f;
-	Vector2 s = Vector2(1.0f);
+	glm::vec2 s = glm::vec2(1.0f);
 	set_prs(p, r, s);
 }
 
-Transform::Transform(Vector2 position, float rotation, Vector2 scale) {
+Transform::Transform(glm::vec2 position, float rotation, glm::vec2 scale) {
 	set_prs(position, rotation, scale);
 }
 
-void Transform::set_prs(Vector2 position, float rotation, Vector2 scale) {
+void Transform::set_prs(glm::vec2 position, float rotation, glm::vec2 scale) {
 	_position = position;
 	_rotation = rotation;
 	_scale = scale;

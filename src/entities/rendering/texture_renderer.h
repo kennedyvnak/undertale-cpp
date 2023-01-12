@@ -1,6 +1,6 @@
 #pragma once
 
-#include "engine.h"
+#include <glm/glm.hpp>
 #include "core/components/transform.h"
 #include <memory>
 
@@ -30,10 +30,10 @@ public:
 
 	inline std::shared_ptr<Texture> get_texture() const { return _texture; }
 	inline std::shared_ptr<Material> get_material() const { return _material; }
-	inline Transform& get_transform() & { return _transform; }
+	inline Transform& get_transform()& { return _transform; }
 
-	void set_position(Vector2 position);
-	void set_scale(Vector2 scale);
+	void set_position(glm::vec2 position);
+	void set_scale(glm::vec2 scale);
 	void set_rotation(float rotation);
 
 	void set_texture(std::shared_ptr<Texture> texture) { _texture = texture; }
