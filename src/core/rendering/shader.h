@@ -29,6 +29,8 @@ public:
 	void bind() const;
 	void unbind() const;
 
+	inline unsigned int get_id() const { return _id; }
+
 	void set_uniform_int(const std::string& name, int value);
 	void set_uniform_float(const std::string& name, float value);
 	void set_uniform_vector2(const std::string& name, const glm::vec2& value);

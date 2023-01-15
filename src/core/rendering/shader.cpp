@@ -96,8 +96,10 @@ unsigned int Shader::compile_shader(unsigned int type, const std::string& source
     if (result == GL_FALSE) {
         int length;
         GL_CALL(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length));
+        length -= 1; // Removes \n character at the end of string
         char* message = (char*)_malloca(length * sizeof(char));
         GL_CALL(glGetShaderInfoLog(id, length, &length, message));
+        message[length - 1] = 0;
         LOG_ERROR_FORMAT("Failed to compile {} shader. '{}'", (type == GL_VERTEX_SHADER ? "vertex" : "fragment"), message);
         GL_CALL(glDeleteShader(id));
         return 0;
