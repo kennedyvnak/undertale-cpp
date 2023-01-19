@@ -15,7 +15,7 @@ add_executable(${PROJECT_NAME} src/engine.cpp ${SOURCE_FILES} ${RESOURCE_FILES})
 #========================== INCLUDES ==========================#
 include_directories(src)
 include_directories(vendor)
-include_directories(vendor/GL/glew/include)
+include_directories(vendor/glew/include)
 include_directories(vendor/glfw/include)
 include_directories(vendor/glm)
 include_directories(vendor/imgui)
@@ -28,7 +28,7 @@ target_link_libraries(${PROJECT_NAME} stb_image)
 #========================== GLEW ==========================#
 set(glew-cmake_BUILD_SHARED OFF)
 set(ONLY_LIBS ON)
-add_subdirectory(vendor/GL/glew)
+add_subdirectory(vendor/glew)
 target_link_libraries(${PROJECT_NAME} libglew_static)
 
 #========================== GLFW ==========================#
