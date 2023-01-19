@@ -1,9 +1,8 @@
 #pragma once
 
-#include <string>
+#include "enpch.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <unordered_map>
 #include "core/assets/asset.h"
 
 struct ShaderProgramSource {
@@ -11,7 +10,7 @@ struct ShaderProgramSource {
 	std::string fragment_source;
 };
 
-class Shader : public Asset {
+class Shader: public Asset {
 private:
 	unsigned int _id;
 	mutable std::unordered_map<std::string, int> _uniform_location_cache;

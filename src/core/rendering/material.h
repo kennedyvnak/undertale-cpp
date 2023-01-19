@@ -1,9 +1,7 @@
 #pragma once
 
+#include "enpch.h"
 #include <glm/glm.hpp>
-#include <string>
-#include <memory>
-#include <unordered_map>
 
 class Shader;
 class Texture;

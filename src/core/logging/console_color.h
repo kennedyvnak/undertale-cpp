@@ -4,14 +4,8 @@
 
 #pragma once
 
-#include <algorithm>
-#include <iostream>
-#include <list>
-#include <map>
-#include <string>
-#include <type_traits>
-#include <utility>
-#include <windows.h>
+#include "enpch.h"
+#include <Windows.h>
 
 namespace hue
 {
@@ -155,8 +149,7 @@ namespace hue
 			int a = c % 16;
 			int b = c / 16;
 			return b + a * 16;
-		}
-		else
+		} else
 			return BAD_COLOR;
 	}
 
@@ -461,7 +454,7 @@ namespace dye
 	template<typename T> class item;
 
 	template<typename T>
-	class colorful : private std::list<item<T>>
+	class colorful: private std::list<item<T>>
 	{
 	public:
 		using std::list<item<T>>::list;
@@ -555,11 +548,11 @@ namespace dye
 		int color;
 
 	public:
-		item(T t) : thing(std::move(t)), color(hue::get()) {}
-		item(T t, int a) : thing(std::move(t)), color(hue::itoc(a)) {}
-		item(T t, int a, int b) : thing(std::move(t)), color(hue::itoc(a, b)) {}
-		item(T t, std::string a) : thing(std::move(t)), color(hue::stoc(a)) {}
-		item(T t, std::string a, std::string b) : thing(std::move(t)), color(hue::stoc(a, b)) {}
+		item(T t): thing(std::move(t)), color(hue::get()) {}
+		item(T t, int a): thing(std::move(t)), color(hue::itoc(a)) {}
+		item(T t, int a, int b): thing(std::move(t)), color(hue::itoc(a, b)) {}
+		item(T t, std::string a): thing(std::move(t)), color(hue::stoc(a)) {}
+		item(T t, std::string a, std::string b): thing(std::move(t)), color(hue::stoc(a, b)) {}
 
 		item<T>& invert()
 		{

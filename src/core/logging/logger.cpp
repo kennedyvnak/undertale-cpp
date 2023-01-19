@@ -1,5 +1,5 @@
 #include "logger.h"
-#include <iostream>
+
 #ifdef _WIN32
 #include "console_color.h"
 #endif // _WIN32

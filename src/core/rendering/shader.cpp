@@ -1,7 +1,5 @@
 #include "shader.h"
 #include <GL/glew.h>
-#include <fstream>
-#include <sstream>
 #include "utility/open_gl_handler.h"
 #include "core/logging/logger.h"
 

@@ -1,8 +1,6 @@
 #pragma once
 
-#include <string>
-#include <chrono>
-#include <format>
+#include "enpch.h"
 
 #define LOG(message) Logger::get_instance()->log(message)
 #define LOG_FORMAT(fmt, ...) Logger::get_instance()->log_format(fmt, ##__VA_ARGS__)

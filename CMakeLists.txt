@@ -12,6 +12,8 @@ file(GLOB_RECURSE SOURCE_FILES src/*.cpp src/*.h)
 file(GLOB_RECURSE RESOURCE_FILES res/**)
 add_executable(${PROJECT_NAME} src/engine.cpp ${SOURCE_FILES} ${RESOURCE_FILES})
 
+target_precompile_headers(${PROJECT_NAME} PRIVATE src/enpch.h)
+
 #========================== INCLUDES ==========================#
 include_directories(src)
 include_directories(vendor)

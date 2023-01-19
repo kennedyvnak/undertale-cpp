@@ -1,7 +1,7 @@
 #pragma once
 
+#include "enpch.h"
 #include <GL/glew.h>
-#include <vector>
 #include "core/logging/logger.h"
 
 #include "utility/open_gl_handler.h"
@@ -32,7 +32,7 @@ public:
 		: _stride(0) {}
 
 	void push(unsigned int type, unsigned int count);
-	
+
 	inline const std::vector<VertexBufferElement> get_elements() const& { return _elements; }
 	inline unsigned int get_stride() const { return _stride; }
 };

@@ -1,9 +1,9 @@
 #pragma once
 
-#include <string>
+#include "enpch.h"
 #include "core/assets/asset.h"
 
-class Texture : public Asset {
+class Texture: public Asset {
 private:
 	unsigned int _id;
 	unsigned char* _local_buffer;
