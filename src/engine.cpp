@@ -29,7 +29,7 @@ int main(void) {
 
 	glfwSetErrorCallback(glfw_error_callback);
 
-	std::shared_ptr<Window> window = std::make_shared<Window>("Undertale");
+	std::shared_ptr<Window> window = std::make_shared<Window>("Coal Engine");
 	if (window->init() == -1)
 		return -1;
 
