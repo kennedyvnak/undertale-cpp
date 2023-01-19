@@ -28,8 +28,8 @@ add_library(stb_image STATIC vendor/stb_image/stb_image.cpp vendor/stb_image/stb
 target_link_libraries(${PROJECT_NAME} stb_image)
 
 #========================== GLEW ==========================#
-set(glew-cmake_BUILD_SHARED OFF)
-set(ONLY_LIBS ON)
+set(glew-cmake_BUILD_SHARED OFF CACHE BOOL "" FORCE)
+set(ONLY_LIBS ON CACHE BOOL "" FORCE)
 add_subdirectory(vendor/glew)
 target_link_libraries(${PROJECT_NAME} libglew_static)
 
