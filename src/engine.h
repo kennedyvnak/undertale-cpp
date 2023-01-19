@@ -2,10 +2,12 @@
 
 #include "enpch.h"
 #include "core/base.h"
+#include "core/rendering/layers/layer_stack.h"
+#include "imgui/imgui_layer.h"
+#include "editor/editor_layer.h"
+#include "core/rendering/window.h"
 
 namespace engine {
-    class Window;
-
     struct EngineCommandLineArgs {
         int count = 0;
         char** args = nullptr;
@@ -24,19 +26,24 @@ namespace engine {
     class Engine {
     public:
         Engine(const EngineSpecification& specification);
-        ~Engine();
+        ~Engine() = default;
 
         void run();
 
         static Engine* create_engine(EngineCommandLineArgs args);
 
-        inline Engine* get_instance() { return _instance; }
+        void push_layer(Layer* layer);
+        void push_overlay(Layer* layer);
+
+        inline static Engine* get_instance() { return _instance; }
         inline const EngineSpecification& get_specifications() const& { return _specs; }
         inline Window& get_window() { return *_window; }
-
     private:
         static Engine* _instance;
         Scope<Window> _window;
         EngineSpecification _specs;
+        LayerStack _layer_stack;
+        imgui::ImGuiLayer* _imgui_layer;
+        EditorLayer* _editor_layer;
     };
 }
