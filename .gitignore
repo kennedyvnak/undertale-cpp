@@ -1,9 +1,3 @@
-# Conan generated files
-conan.lock
-conanbuildinfo**
-conaninfo.txt
-graph_info.json
-
 #IMGUI generation
 imgui.ini
 
@@ -45,5 +39,6 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 _deps
+
 #Generated
 build/

@@ -1,13 +1,9 @@
-# Undertale C++
+# Coal Engine
 
 ## How to install
 
-1. Install Conan [https://conan.io](https://conan.io) and Cmake
-2. Clone project `git clone https://github.com/kennedyvnak/undertale-cpp.git`
-3. Run `config-{debug or release}.bat` to configure the project
+Start by cloning the repository with git clone --recursive <https://github.com/kennedyvnak/undertale-cpp.git>
 
-## How to build
+If the repository was cloned non-recursively previously, use git submodule update --init to clone the necessary submodules.
 
-After run the `config.bat` file, you can use `cmake --build build/{debug or release}` to generate the .exe file in `build/{debug or release}/bin`.
-
-- If you change any resource on the res/ folder you need to re-build the project or manually update it into the bin/ folder.
+After successfully clone the repository, run the cmake on it then you can build the project.

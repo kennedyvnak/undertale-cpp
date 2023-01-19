@@ -1,12 +1,12 @@
 #include <memory>
 #include <string>
 #include <GLFW/glfw3.h>
-#include <gl/glew.h>
+#include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <imgui.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
+#include <imgui/backends/imgui_impl_glfw.h>
+#include <imgui/backends/imgui_impl_opengl3.h>
 
 #include "utility/open_gl_handler.h"
 #include "core/rendering/window.h"
@@ -47,7 +47,7 @@ int main(void) {
 
 	if (glewInit() != GLEW_OK)
 		LOG_ERROR("Glew initialization failed.");
-	
+
 	GL_CALL(glEnable(GL_BLEND));
 	GL_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 

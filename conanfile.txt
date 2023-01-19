@@ -1,9 +1,0 @@
-[requires]
-glfw/3.3.8
-glew/2.2.0
-stb/cci.20210910
-glm/cci.20220420
-imgui/1.89.2
-
-[generators]
-cmake
