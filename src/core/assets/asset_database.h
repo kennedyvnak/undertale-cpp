@@ -1,6 +1,7 @@
 #pragma once
 
 #include "enpch.h"
+#include "core/base.h"
 
 namespace engine {
 	class Texture;
@@ -14,8 +15,8 @@ namespace engine {
 
 		static AssetDatabase* get_instance() { return _instance; }
 
-		static std::shared_ptr<Texture> load_texture(const std::string& path);
-		static std::shared_ptr<Shader> load_shader(const std::string& path);
+		static Ref<Texture> load_texture(const std::string& path);
+		static Ref<Shader> load_shader(const std::string& path);
 	private:
 		AssetDatabase();
 		~AssetDatabase();
@@ -25,7 +26,7 @@ namespace engine {
 		std::unordered_map<std::string, std::weak_ptr<Texture>> _texture_assets;
 		std::unordered_map<std::string, std::weak_ptr<Shader>> _shader_assets;
 
-		std::shared_ptr<Texture> iload_texture(const std::string& path);
-		std::shared_ptr<Shader> iload_shader(const std::string& path);
+		Ref<Texture> iload_texture(const std::string& path);
+		Ref<Shader> iload_shader(const std::string& path);
 	};
 }

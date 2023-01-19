@@ -1,61 +1,60 @@
 #include "enpch.h"
-#include <GLFW/glfw3.h>
+#include "engine.h"
+#include "core/base.h"
 #include <GL/glew.h>
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 #include <imgui.h>
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_opengl3.h>
 
-#include "core/rendering/window.h"
-#include "core/rendering/vertex_buffer.h"
-#include "core/rendering/index_buffer.h"
-#include "core/rendering/vertex_array.h"
-#include "core/rendering/vertex_buffer_layout.h"
-#include "core/rendering/shader.h"
-#include "core/rendering/material.h"
-#include "core/rendering/mesh.h"
-#include "core/rendering/texture.h"
-#include "core/rendering/camera.h"
-#include "core/components/transform.h"
 #include "core/assets/asset_database.h"
-#include "entities/rendering/texture_renderer.h"
-#include "core/logging/logger.h"
+#include "core/rendering/window.h"
 #include "core/rendering/rendering_api.h"
+#include "entities/rendering/texture_renderer.h"
 
-using namespace engine;
+namespace engine {
+	Engine* Engine::_instance;
 
-int main(void) {
-	Logger::initialize_logger();
-	AssetDatabase::load_database();
+	Engine::Engine(const EngineSpecification& specification)
+		: _specs(specification) {
+		_instance = this;
 
-	std::shared_ptr<Window> window = std::make_shared<Window>("Coal Engine");
-	if (window->init() == -1)
-		return -1;
+		AssetDatabase::load_database();
 
-	rendering::RenderingAPI::init();
+		_window = create_scope<Window>(specification.name);
+		ASSERT(_window->init() != -1, "Window creation failed");
 
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;    // Enable Gamepad Controls
+		rendering::RenderingAPI::init();
 
-	ImGui::StyleColorsDark();
+		// IMGUI stuff
+		IMGUI_CHECKVERSION();
+		ImGui::CreateContext();
+		ImGuiIO& io = ImGui::GetIO(); (void)io;
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;    // Enable Gamepad Controls
 
-	ImGui_ImplGlfw_InitForOpenGL(window->get_ptr(), true);
-	ImGui_ImplOpenGL3_Init("#version 330");
+		ImGui::StyleColorsDark();
 
-	{
-		std::shared_ptr<Camera> cam = std::make_shared<Camera>(0.0f, float(window->get_width()), 0.0f, float(window->get_height()), -1.0f, 1.0f);
+		ImGui_ImplGlfw_InitForOpenGL(_window->get_ptr(), true);
+		ImGui_ImplOpenGL3_Init("#version 330");
+	}
 
-		std::shared_ptr<Texture> texture = AssetDatabase::load_texture("res/textures/hearth.png");
+	Engine::~Engine() {
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplGlfw_Shutdown();
+		ImGui::DestroyContext();
+	}
 
-		std::shared_ptr<entities::TextureRenderer> tex_renderer = std::make_shared<entities::TextureRenderer>(texture, Transform(glm::vec2(window->get_width() * 0.5f, window->get_height() * 0.5f), 0.0f, glm::vec2(100.0f)));
+	void Engine::run() {
+		Ref<Camera> cam = create_ref<Camera>(0.0f, float(_window->get_width()), 0.0f, float(_window->get_height()), -1.0f, 1.0f);
+
+		Ref<Texture> texture = AssetDatabase::load_texture("res/textures/hearth.png");
+
+		Ref<entities::TextureRenderer> tex_renderer = create_ref<entities::TextureRenderer>(texture, Transform(glm::vec2(_window->get_width() * 0.5f, _window->get_height() * 0.5f), 0.0f, glm::vec2(100.0f)));
 
 		rendering::RenderingAPI::set_clear_color(glm::vec4(0.07f, 0.13f, 0.17f, 1.0f));
 
-		while (!window->should_close()) {
+		while (!_window->should_close()) {
 			rendering::RenderingAPI::clear();
 
 			ImGui_ImplOpenGL3_NewFrame();
@@ -63,10 +62,10 @@ int main(void) {
 			ImGui::NewFrame();
 
 			{
-				int width = window->get_width();
-				int height = window->get_height();
-				bool fullscreen = window->get_fullscreen();
-				bool vsync = window->get_vsync();
+				int width = _window->get_width();
+				int height = _window->get_height();
+				bool fullscreen = _window->get_fullscreen();
+				bool vsync = _window->get_vsync();
 
 				ImGui::Begin("Configs");
 				ImGui::SliderInt("Width", &width, 640, 1366);
@@ -75,17 +74,17 @@ int main(void) {
 				ImGui::Checkbox("V-Sync", &vsync);
 				ImGui::End();
 
-				if (width != window->get_width()) {
-					window->set_width(width);
+				if (width != _window->get_width()) {
+					_window->set_width(width);
 				}
-				if (height != window->get_height()) {
-					window->set_height(height);
+				if (height != _window->get_height()) {
+					_window->set_height(height);
 				}
-				if (fullscreen != window->get_fullscreen()) {
-					window->set_fullscreen(fullscreen);
+				if (fullscreen != _window->get_fullscreen()) {
+					_window->set_fullscreen(fullscreen);
 				}
-				if (vsync != window->get_vsync()) {
-					window->set_vsync(vsync);
+				if (vsync != _window->get_vsync()) {
+					_window->set_vsync(vsync);
 				}
 			}
 
@@ -95,7 +94,7 @@ int main(void) {
 				float rotation = t.get_rotation();
 				glm::vec2 scale = t.get_scale();
 				ImGui::Begin("Properties");
-				ImGui::SliderFloat2("Translation", &translation.x, 0.0f, float(window->get_width()));
+				ImGui::SliderFloat2("Translation", &translation.x, 0.0f, float(_window->get_width()));
 				ImGui::SliderFloat2("Scale", &scale.x, 0.0f, 300.0f);
 				ImGui::SliderFloat("Rotation", &rotation, 0.0f, 360.0f);
 				tex_renderer->set_position(translation);
@@ -114,14 +113,15 @@ int main(void) {
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-			window->swap_buffers();
-			window->poll_events();
+			_window->swap_buffers();
+			_window->poll_events();
 		}
 	}
 
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplGlfw_Shutdown();
-	ImGui::DestroyContext();
-
-	return 0;
+	Engine* Engine::create_engine(EngineCommandLineArgs args) {
+		EngineSpecification specification;
+		specification.name = "Coal Engine";
+		specification.command_line_args = args;
+		return new Engine(specification);
+	}
 }

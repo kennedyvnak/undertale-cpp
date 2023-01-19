@@ -1,46 +1,45 @@
 #pragma once
 
 #include "enpch.h"
+#include "core/base.h"
 #include <glm/glm.hpp>
+#include "core/rendering/texture.h"
+#include "core/rendering/material.h"
+#include "core/rendering/mesh.h"
+#include "core/rendering/camera.h"
 #include "core/components/transform.h"
 
-
 namespace engine {
-	class Texture;
-	class Material;
-	class Mesh;
-	class Camera;
-
 	namespace entities {
 		class TextureRenderer {
 		private:
-			std::shared_ptr<Texture> _texture;
-			std::shared_ptr<Material> _material;
-			std::shared_ptr<Mesh> _mesh;
+			Ref<Texture> _texture;
+			Ref<Material> _material;
+			Ref<Mesh> _mesh;
 			Transform _transform;
 
-			static std::shared_ptr<Material> get_default_material();
+			static Ref<Material> get_default_material();
 
 		public:
 			TextureRenderer();
-			TextureRenderer(std::shared_ptr<Texture> texture);
-			TextureRenderer(std::shared_ptr<Texture> texture, const Transform& _transform);
-			TextureRenderer(std::shared_ptr<Texture> texture, std::shared_ptr<Material> material);
-			TextureRenderer(std::shared_ptr<Texture> texture, std::shared_ptr<Material> material, const Transform& _transform);
+			TextureRenderer(Ref<Texture> texture);
+			TextureRenderer(Ref<Texture> texture, const Transform& _transform);
+			TextureRenderer(Ref<Texture> texture, Ref<Material> material);
+			TextureRenderer(Ref<Texture> texture, Ref<Material> material, const Transform& _transform);
 			~TextureRenderer();
 
-			void draw(std::shared_ptr<Camera> camera);
+			void draw(Ref<Camera> camera);
 
-			inline std::shared_ptr<Texture> get_texture() const { return _texture; }
-			inline std::shared_ptr<Material> get_material() const { return _material; }
+			inline Ref<Texture> get_texture() const { return _texture; }
+			inline Ref<Material> get_material() const { return _material; }
 			inline Transform& get_transform()& { return _transform; }
 
 			void set_position(glm::vec2 position);
 			void set_scale(glm::vec2 scale);
 			void set_rotation(float rotation);
 
-			void set_texture(std::shared_ptr<Texture> texture) { _texture = texture; }
-			void set_material(std::shared_ptr<Material> material) { _material = material; }
+			void set_texture(Ref<Texture> texture) { _texture = texture; }
+			void set_material(Ref<Material> material) { _material = material; }
 			void set_transform(const Transform& transform) { _transform = transform; }
 		};
 	}

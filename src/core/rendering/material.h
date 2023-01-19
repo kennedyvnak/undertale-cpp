@@ -1,6 +1,7 @@
 #pragma once
 
 #include "enpch.h"
+#include "core/base.h"
 #include <glm/glm.hpp>
 
 // TODO: default values
@@ -10,7 +11,7 @@ namespace engine {
 
 	class Material {
 	private:
-		std::shared_ptr<Shader> _shader;
+		Ref<Shader> _shader;
 
 		std::unordered_map<std::string, int> _uniforms_int;
 		std::unordered_map<std::string, float> _uniforms_float;
@@ -18,10 +19,10 @@ namespace engine {
 		std::unordered_map<std::string, glm::vec3> _uniforms_vector3;
 		std::unordered_map<std::string, glm::vec4> _uniforms_vector4;
 		std::unordered_map<std::string, glm::mat4> _uniforms_matrix;
-		std::unordered_map<std::string, std::shared_ptr<Texture>> _uniforms_texture;
+		std::unordered_map<std::string, Ref<Texture>> _uniforms_texture;
 
 	public:
-		Material(std::shared_ptr<Shader> shader);
+		Material(Ref<Shader> shader);
 		Material(const Material& other);
 		~Material();
 
@@ -37,7 +38,7 @@ namespace engine {
 		inline glm::vec3 get_vector3(const std::string& name) const { GET_UNIFORM_VALUE(_uniforms_vector3, glm::vec3(0.0f)) }
 		inline glm::vec4 get_vector4(const std::string& name) const { GET_UNIFORM_VALUE(_uniforms_vector4, glm::vec4(0.0f)) }
 		inline glm::mat4 get_matrix(const std::string& name) const { GET_UNIFORM_VALUE(_uniforms_matrix, glm::mat4(1.0f)) }
-		inline std::shared_ptr<Texture> get_texture(const std::string& name) const { GET_UNIFORM_VALUE(_uniforms_texture, nullptr) }
+		inline Ref<Texture> get_texture(const std::string& name) const { GET_UNIFORM_VALUE(_uniforms_texture, nullptr) }
 
 		inline void set_int(const std::string& name, int value) { _uniforms_int[name] = value; }
 		inline void set_float(const std::string& name, float value) { _uniforms_float[name] = value; }
@@ -45,7 +46,7 @@ namespace engine {
 		inline void set_vector3(const std::string& name, const glm::vec3& value) { _uniforms_vector3[name] = value; }
 		inline void set_vector4(const std::string& name, const glm::vec4& value) { _uniforms_vector4[name] = value; }
 		inline void set_matrix(const std::string& name, const glm::mat4& value) { _uniforms_matrix[name] = value; }
-		inline void set_texture(const std::string& name, std::shared_ptr<Texture> value) { _uniforms_texture[name] = value; }
+		inline void set_texture(const std::string& name, Ref<Texture> value) { _uniforms_texture[name] = value; }
 
 #undef GET_UNIFORM_VALUE
 
@@ -53,6 +54,6 @@ namespace engine {
 		void unbind() const;
 
 		inline Shader* get_shader() const { return _shader.get(); }
-		void set_shader(std::shared_ptr<Shader> shader);
+		void set_shader(Ref<Shader> shader);
 	};
 }

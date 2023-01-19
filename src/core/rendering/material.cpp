@@ -3,7 +3,7 @@
 #include "texture.h"
 
 namespace engine {
-	Material::Material(std::shared_ptr<Shader> shader)
+	Material::Material(Ref<Shader> shader)
 		: _shader(shader) { }
 
 	Material::Material(const Material& other) {
@@ -49,7 +49,7 @@ namespace engine {
 		_shader->unbind();
 	}
 
-	void Material::set_shader(std::shared_ptr<Shader> shader) {
+	void Material::set_shader(Ref<Shader> shader) {
 		if (shader)
 			_shader = shader;
 	}

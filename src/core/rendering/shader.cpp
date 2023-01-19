@@ -1,6 +1,6 @@
 #include "shader.h"
+#include "core/base.h"
 #include <GL/glew.h>
-#include "core/logging/logger.h"
 
 namespace engine {
     Shader::Shader(const std::string& filename)

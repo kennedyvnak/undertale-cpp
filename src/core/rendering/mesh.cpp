@@ -27,7 +27,7 @@ namespace engine {
 		rebuild_mesh();
 	}
 
-	void Mesh::draw(std::shared_ptr<Material> mat) const {
+	void Mesh::draw(Ref<Material> mat) const {
 		mat->bind();
 		_va.bind();
 		_ib.bind();
@@ -61,7 +61,7 @@ namespace engine {
 		_ib.unbind();
 	}
 
-	std::shared_ptr<Mesh> Mesh::make_quad_mesh() {
-		return std::make_shared<Mesh>();
+	Ref<Mesh> Mesh::make_quad_mesh() {
+		return create_ref<Mesh>();
 	}
 }

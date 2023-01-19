@@ -37,5 +37,5 @@ namespace engine {
 	
 	std::string to_string(const char* obj) { return obj; }
 
-	std::string to_string(std::shared_ptr<Asset> asset) { return asset->get_path(); }
+	std::string to_string(Ref<Asset> asset) { return asset->get_path(); }
 }

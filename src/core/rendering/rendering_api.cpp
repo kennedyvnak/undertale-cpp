@@ -1,7 +1,7 @@
 #include "rendering_api.h"
+#include "core/base.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include "core/logging/logger.h"
 
 namespace engine::rendering {
     RenderingAPI* RenderingAPI::_current_api;
