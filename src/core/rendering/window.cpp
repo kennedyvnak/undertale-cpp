@@ -74,6 +74,10 @@ namespace engine {
 		glfwSwapBuffers(_ptr);
 	}
 
+	void Window::poll_events() {
+		glfwPollEvents();
+	}
+
 	bool Window::should_close() {
 		return glfwWindowShouldClose(_ptr);
 	}

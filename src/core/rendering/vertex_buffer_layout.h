@@ -3,7 +3,6 @@
 #include "enpch.h"
 #include <GL/glew.h>
 #include "core/logging/logger.h"
-#include "platform/opengl/opengl_error_handler.h"
 
 namespace engine::buffers {
 	struct VertexBufferElement {

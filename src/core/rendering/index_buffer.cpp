@@ -1,6 +1,6 @@
 #include "index_buffer.h"
-#include "platform/opengl/opengl_error_handler.h"
 #include "core/logging/logger.h"
+#include <GL/glew.h>
 
 namespace engine::buffers {
 	IndexBuffer::IndexBuffer()
@@ -12,26 +12,26 @@ namespace engine::buffers {
 
 	IndexBuffer::~IndexBuffer() {
 		if (_id)
-			GL_CALL(glDeleteBuffers(1, &_id));
+			glDeleteBuffers(1, &_id);
 	}
 
 	void IndexBuffer::set_buffer(const std::vector<unsigned int>& indices) {
 		ASSERT(sizeof(unsigned int) == sizeof(GLuint), "Bytes lenght of unsigned int isn't equal to bytes lenght of GLuint.");
 
 		if (_id)
-			GL_CALL(glDeleteBuffers(1, &_id));
+			glDeleteBuffers(1, &_id);
 
-		GL_CALL(glGenBuffers(1, &_id));
+		glGenBuffers(1, &_id);
 		bind();
-		GL_CALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW));
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
 		unbind();
 	}
 
 	void IndexBuffer::bind() const {
-		GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _id));
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _id);
 	}
 
 	void IndexBuffer::unbind() const {
-		GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 }

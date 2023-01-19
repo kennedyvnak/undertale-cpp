@@ -1,6 +1,5 @@
 #include "shader.h"
 #include <GL/glew.h>
-#include "platform/opengl/opengl_error_handler.h"
 #include "core/logging/logger.h"
 
 namespace engine {
@@ -11,15 +10,15 @@ namespace engine {
     }
 
     Shader::~Shader() {
-        GL_CALL(glDeleteProgram(_id));
+        glDeleteProgram(_id);
     }
 
     void Shader::bind() const {
-        GL_CALL(glUseProgram(_id));
+        glUseProgram(_id);
     }
 
     void Shader::unbind() const {
-        GL_CALL(glUseProgram(0));
+        glUseProgram(0);
     }
 
     int Shader::get_uniform_location(const std::string& name) const {
@@ -28,34 +27,34 @@ namespace engine {
             return location_search->second;
         }
 
-        GL_CALL(int location = glGetUniformLocation(_id, name.c_str()));
+        int location = glGetUniformLocation(_id, name.c_str());
         ASSERT_FORMAT(location != -1, "Uniform {} doesn't exist.", name);
         _uniform_location_cache[name] = location;
         return location;
     }
 
     void Shader::set_uniform_int(const std::string& name, int value) {
-        GL_CALL(glUniform1i(get_uniform_location(name), value));
+        glUniform1i(get_uniform_location(name), value);
     }
 
     void Shader::set_uniform_float(const std::string& name, float value) {
-        GL_CALL(glUniform1f(get_uniform_location(name), value));
+        glUniform1f(get_uniform_location(name), value);
     }
 
     void Shader::set_uniform_vector2(const std::string& name, const glm::vec2& value) {
-        GL_CALL(glUniform2f(get_uniform_location(name), value.x, value.y));
+        glUniform2f(get_uniform_location(name), value.x, value.y);
     }
 
     void Shader::set_uniform_vector3(const std::string& name, const glm::vec3& value) {
-        GL_CALL(glUniform3f(get_uniform_location(name), value.x, value.y, value.z));
+        glUniform3f(get_uniform_location(name), value.x, value.y, value.z);
     }
 
     void Shader::set_uniform_vector4(const std::string& name, const glm::vec4& value) {
-        GL_CALL(glUniform4f(get_uniform_location(name), value.x, value.y, value.z, value.w));
+        glUniform4f(get_uniform_location(name), value.x, value.y, value.z, value.w);
     }
 
     void Shader::set_uniform_matrix(const std::string& name, const glm::mat4& value) {
-        GL_CALL(glUniformMatrix4fv(get_uniform_location(name), 1, GL_FALSE, glm::value_ptr(value)));
+        glUniformMatrix4fv(get_uniform_location(name), 1, GL_FALSE, glm::value_ptr(value));
     }
 
     ShaderProgramSource Shader::parse_shader(const std::string& filename) {
@@ -84,23 +83,23 @@ namespace engine {
     }
 
     unsigned int Shader::compile_shader(unsigned int type, const std::string& source) {
-        GL_CALL(unsigned int id = glCreateShader(type));
+        unsigned int id = glCreateShader(type);
 
         const char* src = source.c_str();
-        GL_CALL(glShaderSource(id, 1, &src, nullptr));
-        GL_CALL(glCompileShader(id));
+        glShaderSource(id, 1, &src, nullptr);
+        glCompileShader(id);
 
         int result;
-        GL_CALL(glGetShaderiv(id, GL_COMPILE_STATUS, &result));
+        glGetShaderiv(id, GL_COMPILE_STATUS, &result);
         if (result == GL_FALSE) {
             int length;
-            GL_CALL(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length));
+            glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
             length -= 1; // Removes \n character at the end of string
             char* message = (char*)_malloca(length * sizeof(char));
-            GL_CALL(glGetShaderInfoLog(id, length, &length, message));
+            glGetShaderInfoLog(id, length, &length, message);
             message[length - 1] = 0;
             LOG_ERROR_FORMAT("Failed to compile {} shader. '{}'", (type == GL_VERTEX_SHADER ? "vertex" : "fragment"), message);
-            GL_CALL(glDeleteShader(id));
+            glDeleteShader(id);
             return 0;
         }
 
@@ -108,17 +107,17 @@ namespace engine {
     }
 
     unsigned int Shader::create_shader(const std::string& vert_shader_source, const std::string& frag_shader_source) {
-        GL_CALL(unsigned int program = glCreateProgram());
+        unsigned int program = glCreateProgram();
         unsigned int vertex_shader = compile_shader(GL_VERTEX_SHADER, vert_shader_source);
         unsigned int fragment_shader = compile_shader(GL_FRAGMENT_SHADER, frag_shader_source);
 
-        GL_CALL(glAttachShader(program, vertex_shader));
-        GL_CALL(glAttachShader(program, fragment_shader));
-        GL_CALL(glLinkProgram(program));
-        GL_CALL(glValidateProgram(program));
+        glAttachShader(program, vertex_shader);
+        glAttachShader(program, fragment_shader);
+        glLinkProgram(program);
+        glValidateProgram(program);
 
-        GL_CALL(glDeleteShader(vertex_shader));
-        GL_CALL(glDeleteShader(fragment_shader));
+        glDeleteShader(vertex_shader);
+        glDeleteShader(fragment_shader);
 
         return program;
     }

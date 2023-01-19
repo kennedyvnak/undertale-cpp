@@ -24,6 +24,7 @@ namespace engine {
 		GLFWwindow* get_ptr() const { return _ptr; }
 
 		void swap_buffers();
+		void poll_events();
 		bool should_close();
 
 	private:

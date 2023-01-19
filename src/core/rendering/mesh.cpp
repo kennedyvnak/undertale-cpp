@@ -32,7 +32,7 @@ namespace engine {
 		_va.bind();
 		_ib.bind();
 
-		GL_CALL(glDrawElements(GL_TRIANGLES, GLsizei(indices.size()), GL_UNSIGNED_INT, nullptr));
+		glDrawElements(GL_TRIANGLES, GLsizei(indices.size()), GL_UNSIGNED_INT, nullptr);
 		mat->unbind();
 	}
 

@@ -7,7 +7,6 @@
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_opengl3.h>
 
-#include "platform/opengl/opengl_error_handler.h"
 #include "core/rendering/window.h"
 #include "core/rendering/vertex_buffer.h"
 #include "core/rendering/index_buffer.h"
@@ -22,6 +21,7 @@
 #include "core/assets/asset_database.h"
 #include "entities/rendering/texture_renderer.h"
 #include "core/logging/logger.h"
+#include "core/rendering/rendering_api.h"
 
 using namespace engine;
 
@@ -29,11 +29,11 @@ int main(void) {
 	Logger::initialize_logger();
 	AssetDatabase::load_database();
 
-	glfwSetErrorCallback(engine::rendering::opengl::glfw_error_callback);
-
 	std::shared_ptr<Window> window = std::make_shared<Window>("Coal Engine");
 	if (window->init() == -1)
 		return -1;
+
+	rendering::RenderingAPI::init();
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -46,16 +46,6 @@ int main(void) {
 	ImGui_ImplGlfw_InitForOpenGL(window->get_ptr(), true);
 	ImGui_ImplOpenGL3_Init("#version 330");
 
-	if (glewInit() != GLEW_OK)
-		LOG_ERROR("Glew initialization failed.");
-
-	GL_CALL(glEnable(GL_BLEND));
-	GL_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-
-	GL_CALL(std::string gl_version = (char*)glGetString(GL_VERSION));
-	GL_CALL(std::string gl_renderer = (char*)glGetString(GL_RENDERER));
-	LOG_FORMAT("Initialize OpenGL | Version: {} | Renderer: {}", gl_version, gl_renderer);
-
 	{
 		std::shared_ptr<Camera> cam = std::make_shared<Camera>(0.0f, float(window->get_width()), 0.0f, float(window->get_height()), -1.0f, 1.0f);
 
@@ -63,9 +53,10 @@ int main(void) {
 
 		std::shared_ptr<entities::TextureRenderer> tex_renderer = std::make_shared<entities::TextureRenderer>(texture, Transform(glm::vec2(window->get_width() * 0.5f, window->get_height() * 0.5f), 0.0f, glm::vec2(100.0f)));
 
+		rendering::RenderingAPI::set_clear_color(glm::vec4(0.07f, 0.13f, 0.17f, 1.0f));
+
 		while (!window->should_close()) {
-			GL_CALL(glClearColor(0.07f, 0.13f, 0.17f, 1.0f));
-			GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
+			rendering::RenderingAPI::clear();
 
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
@@ -124,8 +115,7 @@ int main(void) {
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 			window->swap_buffers();
-
-			glfwPollEvents();
+			window->poll_events();
 		}
 	}
 
