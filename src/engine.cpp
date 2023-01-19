@@ -7,7 +7,7 @@
 #include "core/assets/asset_database.h"
 #include "core/rendering/window.h"
 #include "core/rendering/rendering_api.h"
-#include "imgui/imgui_layer.h"
+#include "core/os/time.h"
 #include "entities/rendering/texture_renderer.h"
 
 namespace engine {
@@ -45,7 +45,7 @@ namespace engine {
 
 			rendering::RenderingAPI::clear();
 
-			float time = float(glfwGetTime());
+			float time = Time::get_time_since_startup();
 			tex_renderer->get_material()->set_vector4("u_Color", glm::vec4(0.5f + sinf(time) * 0.5f, 0.5f + cosf(time) * 0.5f, 0.5f + sinf(time * 3.14f) * 0.5f, 1.0f));
 
 			tex_renderer->draw(cam);
