@@ -7,7 +7,7 @@
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_opengl3.h>
 
-#include "utility/open_gl_handler.h"
+#include "platform/opengl/opengl_error_handler.h"
 #include "core/rendering/window.h"
 #include "core/rendering/vertex_buffer.h"
 #include "core/rendering/index_buffer.h"
@@ -23,11 +23,13 @@
 #include "entities/rendering/texture_renderer.h"
 #include "core/logging/logger.h"
 
+using namespace engine;
+
 int main(void) {
 	Logger::initialize_logger();
 	AssetDatabase::load_database();
 
-	glfwSetErrorCallback(glfw_error_callback);
+	glfwSetErrorCallback(engine::rendering::opengl::glfw_error_callback);
 
 	std::shared_ptr<Window> window = std::make_shared<Window>("Coal Engine");
 	if (window->init() == -1)
@@ -59,7 +61,7 @@ int main(void) {
 
 		std::shared_ptr<Texture> texture = AssetDatabase::load_texture("res/textures/hearth.png");
 
-		std::shared_ptr<TextureRenderer> tex_renderer = std::make_shared<TextureRenderer>(texture, Transform(glm::vec2(window->get_width() * 0.5f, window->get_height() * 0.5f), 0.0f, glm::vec2(100.0f)));
+		std::shared_ptr<entities::TextureRenderer> tex_renderer = std::make_shared<entities::TextureRenderer>(texture, Transform(glm::vec2(window->get_width() * 0.5f, window->get_height() * 0.5f), 0.0f, glm::vec2(100.0f)));
 
 		while (!window->should_close()) {
 			GL_CALL(glClearColor(0.07f, 0.13f, 0.17f, 1.0f));
