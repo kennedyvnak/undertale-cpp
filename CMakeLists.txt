@@ -56,11 +56,8 @@ target_link_libraries(${PROJECT_NAME} imgui)
 #========================== DEFINITIONS ==========================#
 add_definitions(-DGLFW_INCLUDE_NONE -DGLEW_STATIC)
 
-if(CMAKE_BUILD_TYPE MATCHES Debug)
-        target_compile_definitions(${PROJECT_NAME} PRIVATE "ENGINE_DEBUG")
-elseif(CMAKE_BUILD_TYPE MATCHES Release)
-        target_compile_definitions(${PROJECT_NAME} PRIVATE "ENGINE_RELEASE")
-endif()
+target_compile_definitions(${PROJECT_NAME} PRIVATE "ENGINE_DEBUG=$<CONFIG:Debug>")
+target_compile_definitions(${PROJECT_NAME} PRIVATE "ENGINE_RELEASE=$<CONFIG:Release>")
 
 #========================== COMMANDS ==========================#
 add_custom_command(
