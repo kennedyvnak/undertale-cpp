@@ -1,6 +1,6 @@
 #pragma once
 
-#include "enpch.h"
+#include <string>
 #include "core/base.h"
 #include "core/rendering/layers/layer_stack.h"
 #include "imgui/imgui_layer.h"
@@ -8,6 +8,8 @@
 #include "core/rendering/window.h"
 
 namespace engine {
+    class Layer;
+
     struct EngineCommandLineArgs {
         int count = 0;
         char** args = nullptr;

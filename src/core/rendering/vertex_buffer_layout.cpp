@@ -1,3 +1,4 @@
+#include "enpch.h"
 #include "vertex_buffer_layout.h"
 
 namespace engine::buffers {

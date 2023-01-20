@@ -1,7 +1,6 @@
 #pragma once
 
-#include "enpch.h"
-#include "core/base.h"
+#include <vector>
 #include <GL/glew.h>
 
 namespace engine::buffers {

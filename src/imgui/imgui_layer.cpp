@@ -1,9 +1,9 @@
+#include "enpch.h"
 #include "imgui_layer.h"
 #include <imgui.h>
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_opengl3.h>
 #include "engine.h"
-#include "core/rendering/window.h"
 
 namespace engine::imgui {
     ImGuiLayer::ImGuiLayer()

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "enpch.h"
 #include "core/base.h"
+#include <string>
 
 namespace engine {
 	class Texture;

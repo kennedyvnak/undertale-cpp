@@ -1,9 +1,10 @@
+#include "enpch.h"
 #include "logger.h"
 
 namespace engine {
-#ifdef _WIN32
+#ifdef ENGINE_PLATFORM_WINDOWS
 #include "console_color.h"
-#endif // _WIN32
+#endif // ENGINE_PLATFORM_WINDOWS
 
 	Logger* Logger::_instance;
 
@@ -35,19 +36,19 @@ namespace engine {
 			break;
 		case 1:
 			// WARNING
-#ifdef _WIN32
+#ifdef ENGINE_PLATFORM_WINDOWS
 			std::cout << dye::yellow(std::vformat("WAR({:%T}): {}", std::make_format_args(log.time, log.message))) << std::endl;
 #else
 			std::cout << std::vformat("WAR({:%T}): {}", std::make_format_args(log.time, log.message)) << std::endl;
-#endif // _WIN32
+#endif // ENGINE_PLATFORM_WINDOWS
 			break;
 		case 2:
 			// ERROR
-#ifdef _WIN32
+#ifdef ENGINE_PLATFORM_WINDOWS
 			std::cout << dye::red(std::vformat("ERR({:%T}): {}", std::make_format_args(log.time, log.message))) << std::endl;
 #else 
 			std::cout << std::vformat("ERR({:%T}): {}", std::make_format_args(log.time, log.message)) << std::endl;
-#endif // _WIN32
+#endif // ENGINE_PLATFORM_WINDOWS
 			break;
 		}
 	}

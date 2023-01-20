@@ -1,7 +1,7 @@
+#include "enpch.h"
 #include "asset_database.h"
 #include "core/rendering/shader.h"
 #include "core/rendering/texture.h"
-#include "core/assets/asset.h"
 
 namespace engine {
 	AssetDatabase* AssetDatabase::_instance;

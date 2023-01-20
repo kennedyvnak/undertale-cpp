@@ -1,7 +1,6 @@
 #pragma once
 
-#include "enpch.h"
-#include "core/base.h"
+#include <vector>
 #include "core/components/transform.h"
 #include "vertex_array.h"
 #include "index_buffer.h"

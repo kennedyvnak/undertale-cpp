@@ -1,5 +1,7 @@
 #pragma once
 
+#include "core/platform_detection.h"
+
 #include <memory>
 #include <format>
 #include <algorithm>
@@ -15,3 +17,5 @@
 #include <map>
 #include <list>
 #include <vector>
+
+#include "core/base.h"

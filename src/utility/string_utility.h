@@ -1,7 +1,8 @@
 #pragma once
 
-#include "enpch.h"
+#include <string>
 #include "core/base.h"
+#include "core/assets/asset.h"
 
 class Asset;
 

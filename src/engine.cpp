@@ -1,12 +1,11 @@
 #include "enpch.h"
 #include "engine.h"
-#include "core/base.h"
 #include <GL/glew.h>
 #include <glm/glm.hpp>
-
 #include "core/assets/asset_database.h"
 #include "core/rendering/window.h"
 #include "core/rendering/rendering_api.h"
+#include "core/rendering/layers/layer.h"
 #include "core/os/time.h"
 #include "entities/rendering/texture_renderer.h"
 

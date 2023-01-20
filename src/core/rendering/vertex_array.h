@@ -1,6 +1,5 @@
 #pragma once
 
-#include <glm/glm.hpp>
 #include "vertex_buffer.h"
 #include "vertex_buffer_layout.h"
 

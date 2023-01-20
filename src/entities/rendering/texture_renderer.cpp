@@ -1,3 +1,4 @@
+#include "enpch.h"
 #include "texture_renderer.h"
 #include "core/assets/asset_database.h"
 

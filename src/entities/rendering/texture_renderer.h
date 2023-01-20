@@ -1,6 +1,5 @@
 #pragma once
 
-#include "enpch.h"
 #include "core/base.h"
 #include <glm/glm.hpp>
 #include "core/rendering/texture.h"

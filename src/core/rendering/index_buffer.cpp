@@ -1,5 +1,5 @@
+#include "enpch.h"
 #include "index_buffer.h"
-#include "core/base.h"
 #include <GL/glew.h>
 
 namespace engine::buffers {

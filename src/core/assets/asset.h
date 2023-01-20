@@ -1,6 +1,6 @@
 #pragma once
 
-#include "enpch.h"
+#include <string>
 
 namespace engine {
 	class Asset {

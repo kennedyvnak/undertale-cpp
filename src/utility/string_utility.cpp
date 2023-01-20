@@ -1,9 +1,7 @@
+#include "enpch.h"
 #include "string_utility.h"
-
 #include <glm/glm.hpp>
 #include <glm/gtx/string_cast.hpp>
-
-#include "core/assets/asset.h"
 
 namespace engine {
 	template<typename T>
@@ -34,7 +32,7 @@ namespace engine {
 
 	template<>
 	std::string to_string(const glm::mat4& obj) { return glm::to_string(obj); }
-	
+
 	std::string to_string(const char* obj) { return obj; }
 
 	std::string to_string(Ref<Asset> asset) { return asset->get_path(); }

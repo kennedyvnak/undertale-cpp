@@ -1,10 +1,16 @@
 // source: https://github.com/aafulei/color-console/
 
-#ifdef _WIN32
+#ifdef ENGINE_PLATFORM_WINDOWS
 
 #pragma once
 
-#include "enpch.h"
+#include <algorithm>
+#include <iostream>
+#include <list>
+#include <map>
+#include <string>
+#include <type_traits>
+#include <utility>
 #include <Windows.h>
 
 namespace hue
@@ -871,4 +877,4 @@ namespace dye
 	template<typename T> R<T> bright_white_on_bright_white(T t) { return R<T> { S<T>(t, "bw", "bw") }; }
 }
 
-#endif // !_WIN32
+#endif // ENGINE_PLATFORM_WINDOWS
