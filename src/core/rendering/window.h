@@ -32,5 +32,7 @@ namespace engine {
 		int _width, _height;
 		bool _fullscreen, _vsync;
 		GLFWwindow* _ptr;
+
+		void window_resized(GLFWwindow* window, int width, int height);
 	};
 }

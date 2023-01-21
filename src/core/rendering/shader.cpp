@@ -29,7 +29,7 @@ namespace engine {
         }
 
         int location = glGetUniformLocation(_id, name.c_str());
-        ASSERT_FORMAT(location != -1, "Uniform {} doesn't exist.", name);
+        EN_ASSERT(location != -1, "Uniform {} doesn't exist.", name);
         _uniform_location_cache[name] = location;
         return location;
     }
@@ -99,7 +99,7 @@ namespace engine {
             char* message = (char*)_malloca(length * sizeof(char));
             glGetShaderInfoLog(id, length, &length, message);
             message[length - 1] = 0;
-            LOG_ERROR_FORMAT("Failed to compile {} shader. '{}'", (type == GL_VERTEX_SHADER ? "vertex" : "fragment"), message);
+            EN_LOG_ERROR("Failed to compile {} shader. '{}'", (type == GL_VERTEX_SHADER ? "vertex" : "fragment"), message);
             glDeleteShader(id);
             return 0;
         }

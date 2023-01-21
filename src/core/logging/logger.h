@@ -2,29 +2,17 @@
 
 #include <string>
 #include <chrono>
+#include "utility/string_utility.h"
 
-#define LOG(message) engine::Logger::get_instance()->log(message)
-#define LOG_FORMAT(fmt, ...) engine::Logger::get_instance()->log_format(fmt, ##__VA_ARGS__)
-
-#define LOG_WARNING(message) engine::Logger::get_instance()->log_warning(message)
-#define LOG_WARNING_FORMAT(fmt, ...) engine::Logger::get_instance()->log_warning_format(fmt, ##__VA_ARGS__)
-
-#define LOG_ERROR(message) engine::Logger::get_instance()->log_error(message)
-#define LOG_ERROR_FORMAT(fmt, ...) engine::Logger::get_instance()->log_error_format(fmt, ##__VA_ARGS__)
-
-#define ASSERT(cond, message)\
-if(!(cond)) {\
-	LOG_ERROR(message);\
-	__debugbreak();\
-}\
-
-#define ASSERT_FORMAT(cond, fmt, ...)\
-if(!(cond)) {\
-	LOG_ERROR_FORMAT(fmt, ##__VA_ARGS__);\
-	__debugbreak();\
-}\
+#define EN_LOG_TRACE(...) engine::Logger::get_instance()->log_trace(__VA_ARGS__)
+#define EN_LOG_INFO(...) engine::Logger::get_instance()->log_info(__VA_ARGS__)
+#define EN_LOG_WARNING(...) engine::Logger::get_instance()->log_warning(__VA_ARGS__)
+#define EN_LOG_ERROR(...) engine::Logger::get_instance()->log_error(__VA_ARGS__)
+#define EN_LOG_CRITICAL(...) engine::Logger::get_instance()->log_critical(__VA_ARGS__)
 
 namespace engine {
+	class LogWindow;
+
 	class Logger {
 	public:
 		struct Log {
@@ -39,29 +27,25 @@ namespace engine {
 
 		static inline Logger* get_instance() { return _instance; }
 
-		void log(const std::string& message);
+		static LogWindow* get_log_window() { return _instance->_log_window; }
 
-		template<typename ... Args>
-		void log_format(const std::string_view& format_str, Args&&... args) {
-			ilog({ 0, std::vformat(format_str, std::make_format_args(args...)), get_current_time() });
-		}
+#define LOG_FUNC(type, value)\
+		template<typename ... Args>\
+		void log_##type##(const std::string_view& format_str, Args&&... args) {\
+			ilog({ value, engine::format(format_str, args...), get_current_time() });\
+		}\
 
-		void log_warning(const std::string& message);
-
-		template<typename ... Args>
-		void log_warning_format(const std::string_view& format_str, Args&&... args) {
-			ilog({ 1, std::vformat(format_str, std::make_format_args(args...)), get_current_time() });
-		}
-
-		void log_error(const std::string& message);
-
-		template<typename ... Args>
-		void log_error_format(const std::string_view& format_str, Args&&... args) {
-			ilog({ 2, std::vformat(format_str, std::make_format_args(args...)), get_current_time() });
-		}
+		LOG_FUNC(trace, 0);
+		LOG_FUNC(info, 1);
+		LOG_FUNC(warning, 2);
+		LOG_FUNC(error, 3);
+		LOG_FUNC(critical, 4);
+#undef LOG_FUNC
 	private:
 		Logger();
 		~Logger();
+
+		LogWindow* _log_window;
 
 		static Logger* _instance;
 

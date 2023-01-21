@@ -6,26 +6,24 @@
 namespace engine::rendering {
     RenderingAPI* RenderingAPI::_current_api;
 
-    void opengl_message_callback(unsigned int source, unsigned int type, unsigned int id, unsigned int severity, int length, const char* message, const void* userParam)
-    {
-        switch (severity)
-        {
-        case GL_DEBUG_SEVERITY_HIGH:         LOG_ERROR_FORMAT("[OpenGL]: {}", message); return;
-        case GL_DEBUG_SEVERITY_MEDIUM:       LOG_ERROR_FORMAT("[OpenGL]: {}", message); return;
-        case GL_DEBUG_SEVERITY_LOW:          LOG_WARNING_FORMAT("[OpenGL]: {}", message); return;
-        case GL_DEBUG_SEVERITY_NOTIFICATION: LOG_FORMAT("[OpenGL]: {}", message); return;
+    void opengl_message_callback(unsigned int source, unsigned int type, unsigned int id, unsigned int severity, int length, const char* message, const void* userParam) {
+        switch (severity) {
+        case GL_DEBUG_SEVERITY_HIGH:         EN_LOG_CRITICAL("[OpenGL]: {}", message); return;
+        case GL_DEBUG_SEVERITY_MEDIUM:       EN_LOG_ERROR("[OpenGL]: {}", message); return;
+        case GL_DEBUG_SEVERITY_LOW:          EN_LOG_WARNING("[OpenGL]: {}", message); return;
+        case GL_DEBUG_SEVERITY_NOTIFICATION: EN_LOG_INFO("[OpenGL]: {}", message); return;
         }
 
-        ASSERT(false, "Unknown severity level!");
+        EN_ASSERT(false, "Unknown severity level!");
     }
 
     void glfw_error_callback(int error_code, const char* description) {
-        LOG_ERROR_FORMAT("[GLFW Error] ({}): {}.", error_code, description);
+        EN_LOG_ERROR("[GLFW Error] ({}): {}.", error_code, description);
         __debugbreak();
     }
 
     void RenderingAPI::init() {
-        ASSERT(glewInit() == GLEW_OK, "Glew initialization failed.");
+        EN_ASSERT(glewInit() == GLEW_OK, "Glew initialization failed.");
 
         _current_api = new RenderingAPI();
 
@@ -39,7 +37,7 @@ namespace engine::rendering {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        LOG_FORMAT("Initialize OpenGL | Version: {} | Renderer: {}", (char*)glGetString(GL_VERSION), (char*)glGetString(GL_RENDERER));
+        EN_LOG_INFO("Initialize OpenGL | Version: {} | Renderer: {}", (char*)glGetString(GL_VERSION), (char*)glGetString(GL_RENDERER));
     }
 
     void RenderingAPI::iset_clear_color(glm::vec4 color) {

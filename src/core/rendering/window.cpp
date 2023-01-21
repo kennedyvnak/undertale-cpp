@@ -1,11 +1,15 @@
 #include "enpch.h"
 #include "window.h"
+#include "engine.h"
 
 namespace engine {
 	Window::Window(const std::string title)
 		: _title(title), _fullscreen(false), _width(0), _height(0), _ptr(nullptr), _vsync(false) { }
 
 	Window::~Window() {
+		glfwSetWindowSizeCallback(_ptr, nullptr);
+		glfwDestroyWindow(_ptr);
+
 		glfwTerminate();
 	}
 
@@ -16,8 +20,6 @@ namespace engine {
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
 		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 		const GLFWvidmode* vidmode = glfwGetVideoMode(monitor);
@@ -36,6 +38,10 @@ namespace engine {
 			glfwTerminate();
 			return -1;
 		}
+
+		glfwSetWindowSizeCallback(_ptr, [](GLFWwindow* window, int width, int height) {
+			Engine::get_instance()->get_window().window_resized(window, width, height);
+			});
 
 		glfwMakeContextCurrent(_ptr);
 
@@ -81,5 +87,10 @@ namespace engine {
 
 	bool Window::should_close() {
 		return glfwWindowShouldClose(_ptr);
+	}
+
+	void Window::window_resized(GLFWwindow* window, int width, int height) {
+		_width = width;
+		_height = height;
 	}
 }

@@ -15,7 +15,7 @@ namespace engine {
         char** args = nullptr;
 
         const char* operator[](int index) const {
-            ASSERT(index < count, "Index out of range.");
+            EN_ASSERT(index < count, "Index out of range.");
             return args[index];
         }
     };
@@ -23,6 +23,15 @@ namespace engine {
     struct EngineSpecification {
         std::string name;
         EngineCommandLineArgs command_line_args;
+    };
+
+    struct EngineMetrics {
+        static const double frame_check_interval;
+        float fps = 0.0f;
+        float ms = 0.0f;
+        double fps_as_double = 0.0;
+        double ms_as_double = 0.0;
+        unsigned long long int total_frame_count = 0;
     };
 
     class Engine {
@@ -39,13 +48,20 @@ namespace engine {
 
         inline static Engine* get_instance() { return _instance; }
         inline const EngineSpecification& get_specifications() const& { return _specs; }
+        inline EngineMetrics get_metrics() const { return _metrics; }
         inline Window& get_window() { return *_window; }
     private:
         static Engine* _instance;
         Scope<Window> _window;
         EngineSpecification _specs;
+        EngineMetrics _metrics;
         LayerStack _layer_stack;
         imgui::ImGuiLayer* _imgui_layer;
         EditorLayer* _editor_layer;
+
+        float _fps_previous_time;
+        float _frame_count;
+
+        void calculate_fps();
     };
 }

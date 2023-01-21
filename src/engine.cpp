@@ -11,6 +11,7 @@
 
 namespace engine {
 	Engine* Engine::_instance;
+	const double EngineMetrics::frame_check_interval = 1.0 / 30.0;
 
 	Engine::Engine(const EngineSpecification& specification)
 		: _specs(specification) {
@@ -19,7 +20,7 @@ namespace engine {
 		AssetDatabase::load_database();
 
 		_window = create_scope<Window>(specification.name);
-		ASSERT(_window->init() != -1, "Window creation failed");
+		EN_ASSERT(_window->init() != -1, "Window creation failed");
 
 		rendering::RenderingAPI::init();
 
@@ -39,6 +40,8 @@ namespace engine {
 		rendering::RenderingAPI::set_clear_color(glm::vec4(0.07f, 0.13f, 0.17f, 1.0f));
 
 		while (!_window->should_close()) {
+			calculate_fps();
+
 			for (Layer* layer : _layer_stack)
 				layer->on_update();
 
@@ -76,5 +79,18 @@ namespace engine {
 	void Engine::push_overlay(Layer* layer) {
 		_layer_stack.push_overlay(layer);
 		layer->on_attach();
+	}
+
+	void Engine::calculate_fps() {
+		double current_time = Time::get_time_since_startup_as_double();
+		double time_diff = current_time - _fps_previous_time;
+		_frame_count++;
+		_metrics.total_frame_count++;
+		if (time_diff >= EngineMetrics::frame_check_interval) {
+			_metrics.fps = _metrics.fps_as_double = 1.0 / time_diff * _frame_count;
+			_metrics.ms = _metrics.ms_as_double = time_diff / _frame_count * 1000.0f;
+			_fps_previous_time = current_time;
+			_frame_count = 0;
+		}
 	}
 }

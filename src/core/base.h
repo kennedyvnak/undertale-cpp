@@ -19,3 +19,4 @@ namespace engine {
 }
 
 #include "core/logging/logger.h"
+#include "core/assertions.h"
