@@ -8,9 +8,11 @@
 
 // TODO: Scene view
 
-namespace engine {
+namespace engine::editor {
     EditorLayer::EditorLayer()
-        : Layer("editor_layer") { }
+        : Layer("editor_layer") {
+        _game_view_window = create_scope<GameViewWindow>();
+    }
 
     void EditorLayer::on_imgui_render() {
         const ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
@@ -97,6 +99,7 @@ namespace engine {
             window.set_vsync(vsync);
 
         Logger::get_log_window()->render();
+        _game_view_window->render();
 
         ImGui::End();
     }

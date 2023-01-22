@@ -6,6 +6,7 @@
 #include "imgui/imgui_layer.h"
 #include "editor/editor_layer.h"
 #include "core/rendering/window.h"
+#include "core/rendering/framebuffer.h"
 
 namespace engine {
     class Layer;
@@ -49,15 +50,17 @@ namespace engine {
         inline static Engine* get_instance() { return _instance; }
         inline const EngineSpecification& get_specifications() const& { return _specs; }
         inline EngineMetrics get_metrics() const { return _metrics; }
-        inline Window& get_window() { return *_window; }
+        inline Window& get_window() const { return *_window; }
+        inline Framebuffer& get_framebuffer() const { return *_framebuffer; }
     private:
         static Engine* _instance;
         Scope<Window> _window;
         EngineSpecification _specs;
         EngineMetrics _metrics;
+        Scope<Framebuffer> _framebuffer;
         LayerStack _layer_stack;
         imgui::ImGuiLayer* _imgui_layer;
-        EditorLayer* _editor_layer;
+        editor::EditorLayer* _editor_layer;
 
         float _fps_previous_time;
         float _frame_count;

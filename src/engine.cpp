@@ -24,8 +24,13 @@ namespace engine {
 
 		rendering::RenderingAPI::init();
 
+		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+		const GLFWvidmode* vidmode = glfwGetVideoMode(monitor);
+		_framebuffer = create_scope<Framebuffer>(vidmode->width, vidmode->height);
+		glViewport(0, 0, vidmode->width, vidmode->height);
+
 		_imgui_layer = new imgui::ImGuiLayer();
-		_editor_layer = new EditorLayer();
+		_editor_layer = new editor::EditorLayer();
 		push_overlay(_imgui_layer);
 		push_layer(_editor_layer);
 	}
@@ -42,6 +47,8 @@ namespace engine {
 		while (!_window->should_close()) {
 			calculate_fps();
 
+			_framebuffer->bind();
+
 			for (Layer* layer : _layer_stack)
 				layer->on_update();
 
@@ -51,6 +58,8 @@ namespace engine {
 			tex_renderer->get_material()->set_vector4("u_Color", glm::vec4(0.5f + sinf(time) * 0.5f, 0.5f + cosf(time) * 0.5f, 0.5f + sinf(time * 3.14f) * 0.5f, 1.0f));
 
 			tex_renderer->draw(cam);
+
+			_framebuffer->unbind();
 
 			_imgui_layer->begin();
 
@@ -88,7 +97,7 @@ namespace engine {
 		_metrics.total_frame_count++;
 		if (time_diff >= EngineMetrics::frame_check_interval) {
 			_metrics.fps = _metrics.fps_as_double = 1.0 / time_diff * _frame_count;
-			_metrics.ms = _metrics.ms_as_double = time_diff / _frame_count * 1000.0f;
+			_metrics.ms = _metrics.ms_as_double = time_diff / _frame_count * 1000.0;
 			_fps_previous_time = current_time;
 			_frame_count = 0;
 		}

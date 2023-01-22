@@ -4,6 +4,23 @@
 #include <GL/glew.h>
 
 namespace engine {
+	Texture::Texture(int width, int height)
+		: Asset("generated"), _width(width), _height(height), _local_buffer(nullptr), _bpp(0) {
+		glGenTextures(1, &_id);
+		glBindTexture(GL_TEXTURE_2D, _id);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+	}
+
+	Texture::Texture(): Asset("generated"), _id(0), _local_buffer(nullptr), _width(0), _height(0), _bpp(0) {
+	}
+
 	Texture::Texture(const std::string& path)
 		: Asset(path), _id(0), _local_buffer(nullptr), _width(0), _height(0), _bpp(0) {
 		stbi_set_flip_vertically_on_load(1);
