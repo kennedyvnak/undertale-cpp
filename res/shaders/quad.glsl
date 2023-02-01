@@ -40,7 +40,7 @@ struct VertexOutput {
 layout (location = 0) in VertexOutput Input;
 layout (location = 3) in flat int v_TexIndex;
 
-uniform sampler2D u_Textures[32];
+layout (binding = 0) uniform sampler2D u_Textures[32];
 
 void main()
 {

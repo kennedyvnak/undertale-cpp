@@ -7,8 +7,6 @@
 #include "core/logging/log_window.h"
 #include "utility/string_utility.h"
 
-// TODO: Scene view
-
 namespace engine::editor {
     EditorLayer::EditorLayer()
         : Layer("editor_layer") {

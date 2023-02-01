@@ -21,7 +21,7 @@ namespace engine {
         static const unsigned int max_quads = 16384;
         static const unsigned int max_vertices = max_quads * 4;
         static const unsigned int max_indices = max_quads * 6;
-        static const unsigned int max_texture_slots = 32; // TODO: Get supported max slots count
+        static int max_texture_slots;
 
         Renderer::Statistics stats;
 
@@ -38,7 +38,7 @@ namespace engine {
             { -0.5f, 0.5f, 0.0f, 1.0f },
         };
 
-        std::array<Ref<Texture>, max_texture_slots> texture_slots;
+        std::vector<Ref<Texture>> texture_slots;
         Ref<Texture> white_texture;
         unsigned int texture_slot_index = 1;
 
@@ -49,9 +49,19 @@ namespace engine {
         Ref<UniformBuffer> camera_uniform_buffer;
     };
 
+    int RendererData::max_texture_slots;
     static RendererData _data;
 
     void Renderer::init() {
+        glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &_data.max_texture_slots);
+        if (_data.max_texture_slots > 32) // 32 is the maximum glsl array size
+            _data.max_texture_slots = 32;
+
+        _data.texture_slots.reserve(_data.max_texture_slots);
+        for (int i = 0; i < _data.max_texture_slots; i++) {
+            _data.texture_slots.push_back(nullptr);
+        }
+
         _data.quad_vertex_array = create_ref<VertexArray>();
 
         _data.quad_vertex_buffer = create_ref<VertexBuffer>(_data.max_vertices * static_cast<unsigned int>(sizeof(QuadVertex)));
@@ -85,13 +95,14 @@ namespace engine {
 
         _data.white_texture = Texture::GenFlatTexture(1, 1, 0xffffffff);
 
-        int samplers[_data.max_texture_slots];
+        std::vector<int> samplers;
+        samplers.reserve(_data.max_texture_slots * sizeof(int));
         for (unsigned int i = 0; i < _data.max_texture_slots; i++)
-            samplers[i] = i;
+            samplers.push_back(i);
 
         _data.quad_shader = AssetDatabase::load_shader("res/shaders/quad.glsl");
         _data.quad_shader->bind();
-        _data.quad_shader->set_uniform_int_buffer("u_Textures", _data.max_texture_slots, samplers);
+        _data.quad_shader->set_uniform_int_buffer("u_Textures", _data.max_texture_slots, samplers.data());
 
         _data.texture_slots[0] = _data.white_texture;
 
@@ -156,7 +167,7 @@ namespace engine {
         constexpr unsigned int quad_vertex_count = 4;
         constexpr glm::vec2 texture_coords[] = { {0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f} };
 
-        if (_data.quad_index_count >= RendererData::max_indices)
+        if (_data.quad_index_count + 6 >= RendererData::max_indices)
             step_batch();
 
         int texture_index = 0;
