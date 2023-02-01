@@ -32,6 +32,7 @@ namespace engine {
 		inline unsigned int get_id() const { return _id; }
 
 		void set_uniform_int(const std::string& name, int value);
+		void set_uniform_int_buffer(const std::string& name, unsigned int count, int* values);
 		void set_uniform_float(const std::string& name, float value);
 		void set_uniform_vector2(const std::string& name, const glm::vec2& value);
 		void set_uniform_vector3(const std::string& name, const glm::vec3& value);

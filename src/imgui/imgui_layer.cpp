@@ -74,7 +74,7 @@ namespace engine::imgui {
         style.Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
 
         ImGui_ImplGlfw_InitForOpenGL(Engine::get_instance()->get_window().get_ptr(), true);
-        ImGui_ImplOpenGL3_Init("#version 330");
+        ImGui_ImplOpenGL3_Init("#version 450");
     }
 
     void ImGuiLayer::on_detach() {

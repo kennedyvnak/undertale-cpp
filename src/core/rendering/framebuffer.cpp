@@ -3,7 +3,8 @@
 #include "texture.h"
 
 namespace engine {
-    Framebuffer::Framebuffer(int width, int height) {
+    Framebuffer::Framebuffer(int width, int height)
+        : _width(width), _height(height) {
         glGenFramebuffers(1, &_id);
         bind();
 

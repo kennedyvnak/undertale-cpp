@@ -2,14 +2,13 @@
 
 #include <glm/glm.hpp>
 
-namespace engine::rendering {
+namespace engine {
     class RenderingAPI {
     public:
         static void init();
 
         static void set_clear_color(glm::vec4 color) { _current_api->iset_clear_color(color); }
         static void clear() { _current_api->iclear(); }
-
     private:
         RenderingAPI() {}
         ~RenderingAPI() {}

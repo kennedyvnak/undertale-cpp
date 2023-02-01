@@ -5,6 +5,7 @@
 #include "core/assets/asset_database.h"
 #include "core/rendering/window.h"
 #include "core/rendering/rendering_api.h"
+#include "core/rendering/renderer.h"
 #include "core/rendering/layers/layer.h"
 #include "core/os/time.h"
 #include "entities/rendering/texture_renderer.h"
@@ -22,7 +23,8 @@ namespace engine {
 		_window = create_scope<Window>(specification.name);
 		EN_ASSERT(_window->init() != -1, "Window creation failed");
 
-		rendering::RenderingAPI::init();
+		RenderingAPI::init();
+		Renderer::init();
 
 		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 		const GLFWvidmode* vidmode = glfwGetVideoMode(monitor);
@@ -35,29 +37,50 @@ namespace engine {
 		push_layer(_editor_layer);
 	}
 
+	Engine::~Engine() {
+		Renderer::finalize();
+	}
+
 	void Engine::run() {
-		Ref<Camera> cam = create_ref<Camera>(0.0f, float(_window->get_width()), 0.0f, float(_window->get_height()), -1.0f, 1.0f);
+		_camera = create_ref<Camera>(0.0f, 20.0f, 0.0f, 20.0f, -1.0f, 1.0f);
+		_camera->set_position(glm::vec2(10.0f, 10.0f));
 
-		Ref<Texture> texture = AssetDatabase::load_texture("res/textures/hearth.png");
+		Ref<Texture> heart_texture = AssetDatabase::load_texture("res/textures/heart.png");
+		Ref<Texture> square_texture = AssetDatabase::load_texture("res/textures/square.png");
+		Ref<Texture> circle_texture = AssetDatabase::load_texture("res/textures/circle.png");
+		Ref<Texture> triangle_texture = AssetDatabase::load_texture("res/textures/triangle.png");
+		Ref<Texture> star_texture = AssetDatabase::load_texture("res/textures/star.png");
 
-		Ref<entities::TextureRenderer> tex_renderer = create_ref<entities::TextureRenderer>(texture, Transform(glm::vec2(_window->get_width() * 0.5f, _window->get_height() * 0.5f), 0.0f, glm::vec2(100.0f)));
+		Ref<Texture> textures[] = { heart_texture, square_texture, circle_texture, triangle_texture, star_texture };
 
-		rendering::RenderingAPI::set_clear_color(glm::vec4(0.07f, 0.13f, 0.17f, 1.0f));
+		for (float y = -9.75f; y < 10.25f; y += 0.5f) {
+			for (float x = -9.75f; x < 10.25f; x += 0.5f) {
+				glm::vec4 color = { (x + 10.0f) / 20.0f, 0.4f, (y + 10.0f) / 20.0f, 0.65f };
+				_texture_renderers.push_back(create_scope<entities::TextureRenderer>(
+					textures[rand() % 5],
+					Transform(glm::vec2(x, y), sinf(rand()) * 360.0f, glm::vec2(0.45f)), color));
+			}
+		}
+
+		RenderingAPI::set_clear_color(glm::vec4(0.07f, 0.13f, 0.17f, 1.0f));
 
 		while (!_window->should_close()) {
 			calculate_fps();
 
+			Renderer::reset_statistics();
 			_framebuffer->bind();
+			RenderingAPI::clear();
 
 			for (Layer* layer : _layer_stack)
 				layer->on_update();
 
-			rendering::RenderingAPI::clear();
+			Renderer::begin_scene(_camera);
 
-			float time = Time::get_time_since_startup();
-			tex_renderer->get_material()->set_vector4("u_Color", glm::vec4(0.5f + sinf(time) * 0.5f, 0.5f + cosf(time) * 0.5f, 0.5f + sinf(time * 3.14f) * 0.5f, 1.0f));
+			for (auto& tex_render : _texture_renderers) {
+				tex_render->draw();
+			}
 
-			tex_renderer->draw(cam);
+			Renderer::end_scene();
 
 			_framebuffer->unbind();
 

@@ -3,6 +3,7 @@
 #include "engine.h"
 #include <imgui.h>
 #include "core/rendering/rendering_api.h"
+#include "core/rendering/renderer.h"
 #include "core/logging/log_window.h"
 #include "utility/string_utility.h"
 
@@ -72,9 +73,12 @@ namespace engine::editor {
 
         ImGui::Begin("Metrics");
         auto metrics = Engine::get_instance()->get_metrics();
+        auto rendering_statistics = Renderer::get_stats();
         ImGui::Text(engine::format("FPS: {}", metrics.fps_as_double).c_str());
         ImGui::Text(engine::format("ms: {}", metrics.ms_as_double).c_str());
         ImGui::Text(engine::format("Frame count: {}", metrics.total_frame_count).c_str());
+        ImGui::Text(engine::format("Quad Count: {}", rendering_statistics.quad_count).c_str());
+        ImGui::Text(engine::format("Draw Calls: {}", rendering_statistics.draw_calls).c_str());
         ImGui::End();
 
         int width = window.get_width();

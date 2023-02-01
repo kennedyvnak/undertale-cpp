@@ -16,6 +16,8 @@ namespace engine {
 		Texture(const std::string& path);
 		~Texture();
 
+		static Ref<Texture> GenFlatTexture(int width, int height, unsigned int color_bytes);
+
 		void bind(unsigned int slot) const;
 		void unbind() const;
 

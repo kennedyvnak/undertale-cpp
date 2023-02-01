@@ -2,11 +2,18 @@
 #include "rendering_api.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "renderer.h"
+#include "engine.h"
+#include "texture.h"
+#include "shader.h"
+#include "vertex_array.h"
+#include "core/components/transform.h"
+#include "core/assets/asset_database.h"
 
-namespace engine::rendering {
+namespace engine {
     RenderingAPI* RenderingAPI::_current_api;
 
-    void opengl_message_callback(unsigned int source, unsigned int type, unsigned int id, unsigned int severity, int length, const char* message, const void* userParam) {
+    void opengl_message_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* user_param) {
         switch (severity) {
         case GL_DEBUG_SEVERITY_HIGH:         EN_LOG_CRITICAL("[OpenGL]: {}", message); return;
         case GL_DEBUG_SEVERITY_MEDIUM:       EN_LOG_ERROR("[OpenGL]: {}", message); return;
@@ -29,7 +36,7 @@ namespace engine::rendering {
 
         glEnable(GL_DEBUG_OUTPUT);
         glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-        glDebugMessageCallback(opengl_message_callback, nullptr);
+        glDebugMessageCallback((GLDEBUGPROC)opengl_message_callback, nullptr);
         glfwSetErrorCallback(glfw_error_callback);
 
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);

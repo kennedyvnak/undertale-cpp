@@ -38,6 +38,10 @@ namespace engine {
         glUniform1i(get_uniform_location(name), value);
     }
 
+    void Shader::set_uniform_int_buffer(const std::string& name, unsigned int count, int* values) {
+        glUniform1iv(get_uniform_location(name), count, values);
+    }
+
     void Shader::set_uniform_float(const std::string& name, float value) {
         glUniform1f(get_uniform_location(name), value);
     }

@@ -16,6 +16,7 @@ namespace engine {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	Texture::Texture(): Asset("generated"), _id(0), _local_buffer(nullptr), _width(0), _height(0), _bpp(0) {
@@ -45,6 +46,14 @@ namespace engine {
 
 	Texture::~Texture() {
 		glDeleteTextures(1, &_id);
+	}
+
+	Ref<Texture> Texture::GenFlatTexture(int width, int height, unsigned int color_bytes) {
+		Ref<Texture> tex = create_ref<Texture>(width, height);
+		glBindTexture(GL_TEXTURE_2D, tex->_id);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, &color_bytes);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		return tex;
 	}
 
 	void Texture::bind(unsigned int slot) const {
