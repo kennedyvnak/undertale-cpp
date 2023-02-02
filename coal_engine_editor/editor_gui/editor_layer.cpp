@@ -12,6 +12,7 @@ namespace engine::editor {
         const ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
 
         Window& window = Engine::get_instance()->get_window();
+        Viewport& game_viewport = Engine::get_instance()->get_viewport();
 
         ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
         ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -74,22 +75,20 @@ namespace engine::editor {
         ImGui::Text(engine::format("Draw Calls: {}", rendering_statistics.draw_calls).c_str());
         ImGui::End();
 
-        int width = window.get_width();
-        int height = window.get_height();
+        int width = game_viewport.get_width();
+        int height = game_viewport.get_height();
         bool fullscreen = window.get_fullscreen();
         bool vsync = window.get_vsync();
 
         ImGui::Begin("Settings");
-        ImGui::SliderInt("Width", &width, 640, 1366);
-        ImGui::SliderInt("Heght", &height, 300, 768);
+        ImGui::SliderInt("Width", &width, Window::min_width, 3840);
+        ImGui::SliderInt("Heght", &height, Window::min_height, 2160);
         ImGui::Checkbox("Fullscreen", &fullscreen);
         ImGui::Checkbox("V-Sync", &vsync);
         ImGui::End();
 
-        if (width != window.get_width())
-            window.set_width(width);
-        if (height != window.get_height())
-            window.set_height(height);
+        if (width != game_viewport.get_width() || width != game_viewport.get_height())
+            game_viewport.resize(width, height);
         if (fullscreen != window.get_fullscreen())
             window.set_fullscreen(fullscreen);
         if (vsync != window.get_vsync())

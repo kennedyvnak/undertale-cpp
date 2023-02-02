@@ -6,6 +6,8 @@
 namespace engine {
 	class Window {
 	public:
+		static const int min_width, min_height;
+
 		Window(const std::string title);
 		~Window();
 

@@ -10,6 +10,8 @@
 #include "core/os/time.h"
 #include "entities/rendering/texture_renderer.h"
 
+// TODO: Create a event system to handle window resizing, input etc
+
 namespace engine {
 	Engine* Engine::_instance;
 	const double EngineMetrics::frame_check_interval = 1.0 / 30.0;
@@ -28,8 +30,7 @@ namespace engine {
 
 		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 		const GLFWvidmode* vidmode = glfwGetVideoMode(monitor);
-		_framebuffer = create_scope<Framebuffer>(vidmode->width, vidmode->height);
-		glViewport(0, 0, vidmode->width, vidmode->height);
+		_viewport = create_scope<Viewport>(vidmode->width, vidmode->height);
 
 #ifndef DISABLE_IMGUI
 		_imgui_layer = new imgui::ImGuiLayer();
@@ -42,10 +43,8 @@ namespace engine {
 	}
 
 	void Engine::run() {
-		float ratio = _framebuffer->get_width() / _framebuffer->get_height();
-
-		_camera = create_ref<Camera>(0.0f, 16.0f, 0.0f, 9.0f, -1.0f, 1.0f);
-		_camera->set_position(glm::vec2(8.0f, 4.5f));
+		_camera = create_ref<Camera>();
+		_camera->set_aspect_ratio((float)_viewport->get_width() / (float)_viewport->get_height());
 
 		Ref<Texture> heart_texture = AssetDatabase::load_texture("res/textures/heart.png");
 		Ref<Texture> square_texture = AssetDatabase::load_texture("res/textures/square.png");
@@ -70,7 +69,7 @@ namespace engine {
 			calculate_fps();
 			Renderer::reset_statistics();
 
-			_framebuffer->bind();
+			_viewport->get_framebuffer().bind();
 			RenderingAPI::clear();
 
 			Renderer::begin_scene(_camera);
@@ -85,7 +84,7 @@ namespace engine {
 
 			Renderer::end_scene();
 
-			_framebuffer->unbind();
+			_viewport->get_framebuffer().unbind();
 
 #ifndef DISABLE_IMGUI
 			_imgui_layer->begin();

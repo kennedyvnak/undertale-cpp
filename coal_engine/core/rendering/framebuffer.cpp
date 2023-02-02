@@ -32,4 +32,9 @@ namespace engine {
     void Framebuffer::unbind() const {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
+    void Framebuffer::resize(int width, int height) {
+        _width = width;
+        _height = height;
+        _texture->resize(width, height);
+    }
 }

@@ -64,4 +64,14 @@ namespace engine {
 	void Texture::unbind() const {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
+
+	void Texture::resize(int width, int height) {
+		if (width == _width && height == _height)
+			return;
+
+		_width = width;
+		_height = height;
+		glBindTexture(GL_TEXTURE_2D, _id);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+	}
 }

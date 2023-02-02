@@ -5,6 +5,7 @@
 #include "core/base.h"
 #include "core/rendering/layers/layer_stack.h"
 #include "core/rendering/window.h"
+#include "core/rendering/viewport.h"
 #include "core/rendering/framebuffer.h"
 #include "core/rendering/camera.h"
 #include "entities/rendering/texture_renderer.h"
@@ -53,14 +54,15 @@ namespace engine {
         inline const EngineSpecification& get_specifications() const& { return _specs; }
         inline EngineMetrics get_metrics() const { return _metrics; }
         inline Window& get_window() const { return *_window; }
-        inline Framebuffer& get_framebuffer() const { return *_framebuffer; }
+        inline Viewport& get_viewport() const { return *_viewport; }
+        inline Framebuffer& get_framebuffer() const { return _viewport->get_framebuffer(); }
         inline Ref<Camera> get_camera() const { return _camera; }
     private:
         static Engine* _instance;
         Scope<Window> _window;
         EngineSpecification _specs;
         EngineMetrics _metrics;
-        Scope<Framebuffer> _framebuffer;
+        Scope<Viewport> _viewport;
         Ref<Camera> _camera;
         LayerStack _layer_stack;
 #ifndef DISABLE_IMGUI

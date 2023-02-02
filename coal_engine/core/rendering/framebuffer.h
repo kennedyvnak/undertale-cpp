@@ -15,6 +15,8 @@ namespace engine {
         void bind() const;
         void unbind() const;
 
+        void resize(int width, int height);
+
         inline unsigned int get_frame_buffer_id() const { return _id; }
         inline  int get_width() const { return _width; }
         inline  int get_height() const { return _height; }
