@@ -6,6 +6,9 @@
 namespace engine::imgui {
     class ImGuiLayer: public Layer {
     public:
+        const char* ini_load_path = "res/layouts/default.ini";
+        const char* ini_config_path = "config/imgui.ini";
+
         ImGuiLayer();
         ~ImGuiLayer() = default;
 

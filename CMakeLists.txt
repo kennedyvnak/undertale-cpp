@@ -7,7 +7,7 @@ project(coal_engine
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_SUPPRESS_REGENERATION true)
 
-option(BUILD_EDITOR "Build editor" OFF)
+option(BUILD_EDITOR "Build editor" ON)
 
 #========================== ENGINE ==========================#
 file(GLOB_RECURSE SOURCE_FILES coal_engine/*.cpp coal_engine/*.h)
@@ -84,3 +84,8 @@ add_custom_command(
         COMMAND ${CMAKE_COMMAND} -E copy_directory
                 ${CMAKE_SOURCE_DIR}/res/
                 $<TARGET_FILE_DIR:${PROJECT_NAME}>/res/)
+
+add_custom_command(
+        TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>/config/)

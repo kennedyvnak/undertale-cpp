@@ -2,6 +2,7 @@
 #include "enpch.h"
 #include "imgui_layer.h"
 #include <imgui.h>
+#include <imgui_internal.h>
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_opengl3.h>
 #include "engine.h"
@@ -14,8 +15,22 @@ namespace engine::imgui {
     void ImGuiLayer::on_attach() {
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
-        ImGuiIO& io = ImGui::GetIO(); (void)io;
+        ImGuiIO& io = ImGui::GetIO();
+
+        io.IniFilename = nullptr;
+        bool ini_cache_exists;
+        {
+            ImFileHandle file = ImFileOpen(ini_config_path, "rb");
+            if (file) {
+                ImFileClose(file);
+                ini_cache_exists = true;
+            } else  ini_cache_exists = false;
+        }
+        ImGui::LoadIniSettingsFromDisk(ini_cache_exists ? ini_config_path : ini_load_path);
+
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_ViewportsEnable;
+        io.Fonts->AddFontFromFileTTF("res/fonts/open_sans/open_sans_regular.ttf", 16.0f);
+        io.FontDefault = io.Fonts->Fonts[0];
 
         ImGuiStyle& style = ImGui::GetStyle();
         if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
@@ -88,6 +103,12 @@ namespace engine::imgui {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
+
+        ImGuiIO& io = ImGui::GetIO();
+        if (io.WantSaveIniSettings) {
+            ImGui::SaveIniSettingsToDisk(ini_config_path);
+            io.WantSaveIniSettings = false;
+        }
     }
 
     void ImGuiLayer::end() {

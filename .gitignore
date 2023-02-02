@@ -1,6 +1,3 @@
-#IMGUI generation
-imgui.ini
-
 #Visual Studio stuff
 *.sln
 *.vcxproj
