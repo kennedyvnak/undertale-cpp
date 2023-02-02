@@ -31,10 +31,10 @@ namespace engine {
 		_framebuffer = create_scope<Framebuffer>(vidmode->width, vidmode->height);
 		glViewport(0, 0, vidmode->width, vidmode->height);
 
+#ifndef DISABLE_IMGUI
 		_imgui_layer = new imgui::ImGuiLayer();
-		_editor_layer = new editor::EditorLayer();
 		push_overlay(_imgui_layer);
-		push_layer(_editor_layer);
+#endif
 	}
 
 	Engine::~Engine() {
@@ -42,8 +42,10 @@ namespace engine {
 	}
 
 	void Engine::run() {
-		_camera = create_ref<Camera>(0.0f, 20.0f, 0.0f, 20.0f, -1.0f, 1.0f);
-		_camera->set_position(glm::vec2(10.0f, 10.0f));
+		float ratio = _framebuffer->get_width() / _framebuffer->get_height();
+
+		_camera = create_ref<Camera>(0.0f, 16.0f, 0.0f, 9.0f, -1.0f, 1.0f);
+		_camera->set_position(glm::vec2(8.0f, 4.5f));
 
 		Ref<Texture> heart_texture = AssetDatabase::load_texture("res/textures/heart.png");
 		Ref<Texture> square_texture = AssetDatabase::load_texture("res/textures/square.png");
@@ -53,9 +55,9 @@ namespace engine {
 
 		Ref<Texture> textures[] = { heart_texture, square_texture, circle_texture, triangle_texture, star_texture };
 
-		for (float y = -9.75f; y < 10.25f; y += 0.5f) {
-			for (float x = -9.75f; x < 10.25f; x += 0.5f) {
-				glm::vec4 color = { (x + 10.0f) / 20.0f, 0.4f, (y + 10.0f) / 20.0f, 0.65f };
+		for (float y = -7.75f; y < 8.25f; y += 0.5f) {
+			for (float x = -7.75f; x < 8.25f; x += 0.5f) {
+				glm::vec4 color = { (x + 8.0f) / 16.0f, 0.4f, (y + 4.5f) / 9.0f, 0.65f };
 				_texture_renderers.push_back(create_scope<entities::TextureRenderer>(
 					textures[rand() % 5],
 					Transform(glm::vec2(x, y), sinf(rand()) * 360.0f, glm::vec2(0.45f)), color));
@@ -66,41 +68,40 @@ namespace engine {
 
 		while (!_window->should_close()) {
 			calculate_fps();
-
 			Renderer::reset_statistics();
+
 			_framebuffer->bind();
 			RenderingAPI::clear();
+
+			Renderer::begin_scene(_camera);
 
 			for (Layer* layer : _layer_stack)
 				layer->on_update();
 
-			Renderer::begin_scene(_camera);
-
 			for (auto& tex_render : _texture_renderers) {
 				tex_render->draw();
 			}
+			Renderer::draw_quad(Transform(glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(1.0f, 1.0f)));
 
 			Renderer::end_scene();
 
 			_framebuffer->unbind();
 
+#ifndef DISABLE_IMGUI
 			_imgui_layer->begin();
 
 			for (Layer* layer : _layer_stack)
 				layer->on_imgui_render();
 
 			_imgui_layer->end();
+#endif
+
+			for (Layer* layer : _layer_stack)
+				layer->post_render();
 
 			_window->swap_buffers();
 			_window->poll_events();
 		}
-	}
-
-	Engine* Engine::create_engine(EngineCommandLineArgs args) {
-		EngineSpecification specification;
-		specification.name = "Coal Engine";
-		specification.command_line_args = args;
-		return new Engine(specification);
 	}
 
 	void Engine::push_layer(Layer* layer) {

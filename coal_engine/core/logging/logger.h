@@ -11,7 +11,9 @@
 #define EN_LOG_CRITICAL(...) engine::Logger::get_instance()->log_critical(__VA_ARGS__)
 
 namespace engine {
+#if ENGINE_EDITOR
 	class LogWindow;
+#endif
 
 	class Logger {
 	public:
@@ -27,7 +29,9 @@ namespace engine {
 
 		static inline Logger* get_instance() { return _instance; }
 
+#if ENGINE_EDITOR
 		static LogWindow* get_log_window() { return _instance->_log_window; }
+#endif
 
 #define LOG_FUNC(type, value)\
 		template<typename ... Args>\
@@ -45,7 +49,9 @@ namespace engine {
 		Logger();
 		~Logger();
 
+#if ENGINE_EDITOR
 		LogWindow* _log_window;
+#endif
 
 		static Logger* _instance;
 

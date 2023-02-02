@@ -1,8 +1,6 @@
-#include "enpch.h"
+#include <coal_engine.h>
 #include "game_view_window.h"
 #include <imgui.h>
-#include "engine.h"
-#include "core/rendering/texture.h"
 
 namespace engine::editor {
     void GameViewWindow::render() {

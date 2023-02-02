@@ -9,6 +9,8 @@ namespace engine {
 
         static void set_clear_color(glm::vec4 color) { _current_api->iset_clear_color(color); }
         static void clear() { _current_api->iclear(); }
+        static void enable_depth_test() { _current_api->ienable_depth_test(); }
+        static void disable_depth_test() { _current_api->idisable_depth_test(); }
     private:
         RenderingAPI() {}
         ~RenderingAPI() {}
@@ -18,5 +20,7 @@ namespace engine {
 
         void iset_clear_color(glm::vec4 color);
         void iclear();
+        void ienable_depth_test();
+        void idisable_depth_test();
     };
 }

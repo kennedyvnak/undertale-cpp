@@ -1,7 +1,6 @@
-#include "enpch.h"
+#include <coal_engine.h>
 #include "log_window.h"
-#include "logger.h"
-#include <imgui.h>
+#include <core/logging/logger.h>
 
 namespace engine {
     void LogWindow::add_log(const Logger::Log& log) {

@@ -1,12 +1,13 @@
 #include "enpch.h"
 #include "logger.h"
-#include "log_window.h"
-
-namespace engine {
+#if ENGINE_EDITOR
+#include <editor_gui/log_window.h>
+#endif
 #ifdef ENGINE_PLATFORM_WINDOWS
 #include "console_color.h"
 #endif // ENGINE_PLATFORM_WINDOWS
 
+namespace engine {
 	Logger* Logger::_instance;
 
 	Logger::Logger() {}
@@ -15,7 +16,9 @@ namespace engine {
 
 	void Logger::initialize_logger() {
 		_instance = new Logger();
+#if ENGINE_EDITOR
 		_instance->_log_window = new LogWindow();
+#endif
 	}
 
 #ifdef ENGINE_PLATFORM_WINDOWS
@@ -25,7 +28,9 @@ namespace engine {
 #endif
 
 	void Logger::ilog(const Log& log) {
+#if ENGINE_EDITOR
 		_log_window->add_log(log);
+#endif
 
 		switch (log.level) {
 		case 0: // TRACE

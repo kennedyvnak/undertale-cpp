@@ -1,8 +1,7 @@
 #pragma once 
 
-#include "core/rendering/layers/layer.h"
+#include <coal_engine.h>
 #include "game_view_window.h"
-#include "core/base.h"
 
 namespace engine::editor {
     class EditorLayer: public Layer {

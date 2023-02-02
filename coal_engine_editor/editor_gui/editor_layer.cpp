@@ -1,11 +1,6 @@
-#include "enpch.h"
 #include "editor_layer.h"
-#include "engine.h"
+#include "log_window.h"
 #include <imgui.h>
-#include "core/rendering/rendering_api.h"
-#include "core/rendering/renderer.h"
-#include "core/logging/log_window.h"
-#include "utility/string_utility.h"
 
 // TODO: Scene view
 
