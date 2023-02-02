@@ -2,8 +2,6 @@
 #include "log_window.h"
 #include <imgui.h>
 
-// TODO: Scene view
-
 namespace engine::editor {
     EditorLayer::EditorLayer()
         : Layer("editor_layer") {
