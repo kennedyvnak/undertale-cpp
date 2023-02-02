@@ -1,3 +1,4 @@
+#ifndef DISABLE_IMGUI
 #pragma once
 
 #include "core/rendering/layers/layer.h"
@@ -15,3 +16,4 @@ namespace engine::imgui {
         void end();
     };
 }
+#endif // DISABLE_IMGUI

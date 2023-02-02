@@ -9,10 +9,10 @@ namespace engine {
         glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
     }
 
-    VertexBuffer::VertexBuffer(unsigned int size, const void* vertices) {
+    VertexBuffer::VertexBuffer(unsigned int size, const void* vertices, bool dynamic) {
         glCreateBuffers(1, &_id);
         glBindBuffer(GL_ARRAY_BUFFER, _id);
-        glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, size, vertices, dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
     }
 
     VertexBuffer::~VertexBuffer() {

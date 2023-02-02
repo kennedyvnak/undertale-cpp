@@ -7,15 +7,29 @@ project(coal_engine
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_SUPPRESS_REGENERATION true)
 
-#========================== ENGINE ==========================#
-file(GLOB_RECURSE SOURCE_FILES src/*.cpp src/*.h)
-file(GLOB_RECURSE RESOURCE_FILES res/**)
-add_executable(${PROJECT_NAME} src/engine.cpp ${SOURCE_FILES} ${RESOURCE_FILES})
+option(BUILD_EDITOR "Build editor" OFF)
 
-target_precompile_headers(${PROJECT_NAME} PRIVATE src/enpch.h)
+#========================== ENGINE ==========================#
+file(GLOB_RECURSE SOURCE_FILES coal_engine/*.cpp coal_engine/*.h)
+file(GLOB_RECURSE RESOURCE_FILES res/**)
+
+if(BUILD_EDITOR)
+        message("Building Engine Editor")
+        file(GLOB_RECURSE EDITOR_SOURCE_FILES coal_engine_editor/*.cpp coal_engine_editor/*.h)
+        add_executable(${PROJECT_NAME} coal_engine_editor/engine_editor.cpp ${SOURCE_FILES} ${RESOURCE_FILES} ${EDITOR_SOURCE_FILES})
+else()
+        message("Building Engine Player")
+        file(GLOB_RECURSE PLAYER_SOURCE_FILES coal_engine_player/*.cpp coal_engine_player/*.h)
+        add_executable(${PROJECT_NAME} coal_engine_player/engine_player.cpp ${SOURCE_FILES} ${RESOURCE_FILES} ${PLAYER_SOURCE_FILES})
+endif()
+
+
+target_precompile_headers(${PROJECT_NAME} PRIVATE coal_engine/enpch.h)
 
 #========================== INCLUDES ==========================#
-include_directories(src)
+include_directories(coal_engine)
+include_directories(coal_engine_editor)
+include_directories(coal_engine_player)
 include_directories(vendor)
 include_directories(vendor/glew/include)
 include_directories(vendor/glfw/include)
@@ -56,6 +70,11 @@ target_link_libraries(${PROJECT_NAME} imgui)
 #========================== DEFINITIONS ==========================#
 add_definitions(-DGLFW_INCLUDE_NONE -DGLEW_STATIC)
 
+if(BUILD_EDITOR)
+        target_compile_definitions(${PROJECT_NAME} PRIVATE ENGINE_EDITOR=1)
+else()
+        target_compile_definitions(${PROJECT_NAME} PRIVATE ENGINE_PLAYER=1)
+endif()
 target_compile_definitions(${PROJECT_NAME} PRIVATE "ENGINE_DEBUG=$<CONFIG:Debug>")
 target_compile_definitions(${PROJECT_NAME} PRIVATE "ENGINE_RELEASE=$<CONFIG:Release>")
 

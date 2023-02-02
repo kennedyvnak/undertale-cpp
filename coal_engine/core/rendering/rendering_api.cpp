@@ -53,6 +53,14 @@ namespace engine {
 
     void RenderingAPI::iclear() {
         glClearColor(_clear_color.r, _clear_color.g, _clear_color.b, _clear_color.a);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+
+    void RenderingAPI::ienable_depth_test() {
+        glEnable(GL_DEPTH_TEST);
+    }
+
+    void RenderingAPI::idisable_depth_test() {
+        glDisable(GL_DEPTH_TEST);
     }
 }

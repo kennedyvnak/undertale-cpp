@@ -4,12 +4,13 @@
 #include <vector>
 #include "core/base.h"
 #include "core/rendering/layers/layer_stack.h"
-#include "imgui/imgui_layer.h"
-#include "editor/editor_layer.h"
 #include "core/rendering/window.h"
 #include "core/rendering/framebuffer.h"
 #include "core/rendering/camera.h"
 #include "entities/rendering/texture_renderer.h"
+#ifndef DISABLE_IMGUI
+#include "imgui/imgui_layer.h"
+#endif
 
 namespace engine {
     class Layer;
@@ -45,8 +46,6 @@ namespace engine {
 
         void run();
 
-        static Engine* create_engine(EngineCommandLineArgs args);
-
         void push_layer(Layer* layer);
         void push_overlay(Layer* layer);
 
@@ -64,8 +63,9 @@ namespace engine {
         Scope<Framebuffer> _framebuffer;
         Ref<Camera> _camera;
         LayerStack _layer_stack;
+#ifndef DISABLE_IMGUI
         imgui::ImGuiLayer* _imgui_layer;
-        editor::EditorLayer* _editor_layer;
+#endif // DISABLE_IMGUI
         std::vector<Scope<entities::TextureRenderer>> _texture_renderers;
 
         float _fps_previous_time;
@@ -73,4 +73,6 @@ namespace engine {
 
         void calculate_fps();
     };
+
+    extern Engine* create_engine(EngineCommandLineArgs args);
 }

@@ -1,3 +1,4 @@
+#ifndef DISABLE_IMGUI
 #include "enpch.h"
 #include "imgui_layer.h"
 #include <imgui.h>
@@ -105,3 +106,4 @@ namespace engine::imgui {
         }
     }
 }
+#endif // DISABLE_IMGUI

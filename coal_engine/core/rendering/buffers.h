@@ -82,7 +82,7 @@ namespace engine {
     class VertexBuffer {
     public:
         VertexBuffer(unsigned int size);
-        VertexBuffer(unsigned int size, const void* vertices);
+        VertexBuffer(unsigned int size, const void* vertices, bool dynamic = true);
         ~VertexBuffer();
 
         void bind() const;

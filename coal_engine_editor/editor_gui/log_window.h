@@ -3,7 +3,6 @@
 #include <imgui.h>
 #include <vector>
 #include <string>
-#include <bitset>
 
 namespace engine {
     struct Logger::Log;
