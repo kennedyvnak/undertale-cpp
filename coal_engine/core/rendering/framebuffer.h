@@ -9,13 +9,13 @@ namespace engine {
 
     class Framebuffer {
     public:
-        Framebuffer(int width, int height);
+        Framebuffer(unsigned int width, unsigned int height);
         ~Framebuffer();
 
         void bind() const;
         void unbind() const;
 
-        void resize(int width, int height);
+        void resize(unsigned int width, unsigned int height);
 
         inline unsigned int get_frame_buffer_id() const { return _id; }
         inline  int get_width() const { return _width; }

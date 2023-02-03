@@ -1,6 +1,7 @@
 #pragma once
 
-#include <string>
+#include "core/base.h"
+#include "core/events/event.h"
 
 namespace engine {
     class Layer {
@@ -15,6 +16,9 @@ namespace engine {
 #ifndef DISABLE_IMGUI
         virtual void on_imgui_render() {}
 #endif
+
+        virtual bool on_event(Event& event) { return false; }
+
         inline const std::string& get_name() const { return _name; }
     protected:
         std::string _name;

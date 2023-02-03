@@ -3,7 +3,7 @@
 #include "texture.h"
 
 namespace engine {
-    Framebuffer::Framebuffer(int width, int height)
+    Framebuffer::Framebuffer(unsigned int width, unsigned int height)
         : _width(width), _height(height) {
         glGenFramebuffers(1, &_id);
         bind();
@@ -32,7 +32,7 @@ namespace engine {
     void Framebuffer::unbind() const {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
-    void Framebuffer::resize(int width, int height) {
+    void Framebuffer::resize(unsigned int width, unsigned int height) {
         _width = width;
         _height = height;
         _texture->resize(width, height);

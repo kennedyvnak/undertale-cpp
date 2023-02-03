@@ -9,8 +9,9 @@
 #include "core/rendering/layers/layer.h"
 #include "core/os/time.h"
 #include "entities/rendering/texture_renderer.h"
+#include "core/events/window_event.h"
 
-// TODO: Create a event system to handle window resizing, input etc
+// TODO: Create a event system to handle input etc
 
 namespace engine {
 	Engine* Engine::_instance;
@@ -23,7 +24,8 @@ namespace engine {
 		AssetDatabase::load_database();
 
 		_window = create_scope<Window>(specification.name);
-		EN_ASSERT(_window->init() != -1, "Window creation failed");
+		_window->set_event_callback(EN_BIND_EVENT_FUNC(Engine::on_event));
+		_window->init();
 
 		RenderingAPI::init();
 		Renderer::init();
@@ -65,41 +67,54 @@ namespace engine {
 
 		RenderingAPI::set_clear_color(glm::vec4(0.07f, 0.13f, 0.17f, 1.0f));
 
-		while (!_window->should_close()) {
+		while (_running) {
 			calculate_fps();
-			Renderer::reset_statistics();
+			if (!_paused) {
+				Renderer::reset_statistics();
 
-			_viewport->get_framebuffer().bind();
-			RenderingAPI::clear();
+				_viewport->get_framebuffer().bind();
+				RenderingAPI::clear();
 
-			Renderer::begin_scene(_camera);
+				Renderer::begin_scene(_camera);
 
-			for (Layer* layer : _layer_stack)
-				layer->on_update();
+				for (Layer* layer : _layer_stack)
+					layer->on_update();
 
-			for (auto& tex_render : _texture_renderers) {
-				tex_render->draw();
-			}
-			Renderer::draw_quad(Transform(glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(1.0f, 1.0f)));
+				for (auto& tex_render : _texture_renderers) {
+					tex_render->draw();
+				}
+				Renderer::draw_quad(Transform(glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(1.0f, 1.0f)));
 
-			Renderer::end_scene();
+				Renderer::end_scene();
 
-			_viewport->get_framebuffer().unbind();
+				_viewport->get_framebuffer().unbind();
 
 #ifndef DISABLE_IMGUI
-			_imgui_layer->begin();
+				_imgui_layer->begin();
 
-			for (Layer* layer : _layer_stack)
-				layer->on_imgui_render();
+				for (Layer* layer : _layer_stack)
+					layer->on_imgui_render();
 
-			_imgui_layer->end();
+				_imgui_layer->end();
 #endif
 
-			for (Layer* layer : _layer_stack)
-				layer->post_render();
+				for (Layer* layer : _layer_stack)
+					layer->post_render();
 
-			_window->swap_buffers();
+				_window->swap_buffers();
+			}
 			_window->poll_events();
+		}
+	}
+
+	void Engine::on_event(Event& event) {
+		EventDispatcher dispatcher(event);
+		dispatcher.dispatch<WindowCloseEvent>(EN_BIND_EVENT_FUNC(Engine::on_window_close));
+
+		for (auto layer = _layer_stack.rbegin(); layer != _layer_stack.rend(); layer++) {
+			if (event.handled)
+				break;
+			(*layer)->on_event(event);
 		}
 	}
 
@@ -111,6 +126,24 @@ namespace engine {
 	void Engine::push_overlay(Layer* layer) {
 		_layer_stack.push_overlay(layer);
 		layer->on_attach();
+	}
+
+	void Engine::resize_viewport(unsigned int width, unsigned int height) {
+		if (width == 0 || height == 0) {
+			_paused = true;
+		} else {
+			_viewport->resize(width, height);
+			_camera->set_aspect_ratio((float)width / (float)height);
+			_paused = false;
+		}
+
+		EngineResizeViewportEvent event(width, height);
+		on_event(event);
+	}
+
+	bool Engine::on_window_close(WindowCloseEvent& event) {
+		_running = false;
+		return true;
 	}
 
 	void Engine::calculate_fps() {

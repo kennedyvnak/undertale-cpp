@@ -1,7 +1,5 @@
 #pragma once
 
-#include "core/platform_detection.h"
-
 #include <memory>
 #include <format>
 #include <algorithm>

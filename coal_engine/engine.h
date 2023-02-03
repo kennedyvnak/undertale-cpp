@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 #include "core/base.h"
+#include "core/events/engine_event.h"
+#include "core/events/window_event.h"
 #include "core/rendering/layers/layer_stack.h"
 #include "core/rendering/window.h"
 #include "core/rendering/viewport.h"
@@ -47,8 +49,14 @@ namespace engine {
 
         void run();
 
+        void on_event(Event& event);
+
         void push_layer(Layer* layer);
         void push_overlay(Layer* layer);
+
+        void close_engine() { _running = false; }
+
+        void resize_viewport(unsigned int width, unsigned int height);
 
         inline static Engine* get_instance() { return _instance; }
         inline const EngineSpecification& get_specifications() const& { return _specs; }
@@ -59,11 +67,16 @@ namespace engine {
         inline Ref<Camera> get_camera() const { return _camera; }
     private:
         static Engine* _instance;
-        Scope<Window> _window;
+        bool _running = true;
+        bool _paused = false;
+
         EngineSpecification _specs;
         EngineMetrics _metrics;
+
+        Scope<Window> _window;
         Scope<Viewport> _viewport;
         Ref<Camera> _camera;
+
         LayerStack _layer_stack;
 #ifndef DISABLE_IMGUI
         imgui::ImGuiLayer* _imgui_layer;
@@ -72,6 +85,8 @@ namespace engine {
 
         float _fps_previous_time;
         float _frame_count;
+
+        bool on_window_close(WindowCloseEvent& event);
 
         void calculate_fps();
     };

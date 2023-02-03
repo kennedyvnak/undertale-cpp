@@ -88,7 +88,7 @@ namespace engine::editor {
         ImGui::End();
 
         if (width != game_viewport.get_width() || width != game_viewport.get_height())
-            game_viewport.resize(width, height);
+            Engine::get_instance()->resize_viewport(width, height);
         if (fullscreen != window.get_fullscreen())
             window.set_fullscreen(fullscreen);
         if (vsync != window.get_vsync())

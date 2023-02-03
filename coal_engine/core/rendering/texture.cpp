@@ -4,8 +4,8 @@
 #include <GL/glew.h>
 
 namespace engine {
-	Texture::Texture(int width, int height)
-		: Asset("generated"), _width(width), _height(height), _local_buffer(nullptr), _bpp(0) {
+	Texture::Texture(unsigned int width, unsigned int height)
+		: Asset("generated"), _width(width), _height(height), _local_buffer(nullptr), _channels(0) {
 		glGenTextures(1, &_id);
 		glBindTexture(GL_TEXTURE_2D, _id);
 
@@ -19,13 +19,13 @@ namespace engine {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	Texture::Texture(): Asset("generated"), _id(0), _local_buffer(nullptr), _width(0), _height(0), _bpp(0) {
+	Texture::Texture(): Asset("generated"), _id(0), _local_buffer(nullptr), _width(0), _height(0), _channels(0) {
 	}
 
 	Texture::Texture(const std::string& path)
-		: Asset(path), _id(0), _local_buffer(nullptr), _width(0), _height(0), _bpp(0) {
+		: Asset(path), _id(0), _local_buffer(nullptr), _width(0), _height(0), _channels(0) {
 		stbi_set_flip_vertically_on_load(1);
-		_local_buffer = stbi_load(path.c_str(), &_width, &_height, &_bpp, 0);
+		_local_buffer = stbi_load(path.c_str(), &_width, &_height, &_channels, 0);
 
 		glGenTextures(1, &_id);
 		glBindTexture(GL_TEXTURE_2D, _id);
@@ -48,7 +48,7 @@ namespace engine {
 		glDeleteTextures(1, &_id);
 	}
 
-	Ref<Texture> Texture::GenFlatTexture(int width, int height, unsigned int color_bytes) {
+	Ref<Texture> Texture::GenFlatTexture(unsigned int width, unsigned int height, unsigned int color_bytes) {
 		Ref<Texture> tex = create_ref<Texture>(width, height);
 		glBindTexture(GL_TEXTURE_2D, tex->_id);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, &color_bytes);
@@ -65,7 +65,7 @@ namespace engine {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	void Texture::resize(int width, int height) {
+	void Texture::resize(unsigned int width, unsigned int height) {
 		if (width == _width && height == _height)
 			return;
 

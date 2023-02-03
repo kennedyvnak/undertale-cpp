@@ -1,6 +1,6 @@
 #if ENGINE_PLAYER
 #include "player_layer.h"
-#endif // ENGINE_PLAYER
+#include "core/event/window_event.h"
 
 namespace engine::player {
     PlayerLayer::PlayerLayer(const std::string& name)
@@ -50,4 +50,15 @@ namespace engine::player {
         framebuffer_va->bind();
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     }
+
+    bool PlayerLayer::on_event(Event& event) {
+        EventDispatcher dispatcher(event);
+        return dispatcher.dispatch<WindowResizeEvent>(EN_BIND_EVENT_FUNC(PlayerLayer::on_window_resize));
+    }
+
+    bool PlayerLayer::on_window_resize(WindowResizeEvent& event) {
+        Engine::get_instance()->resize_viewport(event.get_width(), event.get_height());
+        return false;
+    }
 }
+#endif // ENGINE_PLAYER

@@ -5,10 +5,10 @@
 namespace engine {
     class Viewport {
     public:
-        Viewport(int width, int height);
+        Viewport(unsigned int width, unsigned int height);
         ~Viewport() = default;
 
-        void resize(int width, int height);
+        void resize(unsigned int width, unsigned int height);
 
         inline int get_width() const { return _framebuffer->get_width(); }
         inline int get_height() const { return _framebuffer->get_height(); }

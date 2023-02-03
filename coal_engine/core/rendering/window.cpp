@@ -1,13 +1,15 @@
 #include "enpch.h"
 #include "window.h"
 #include "engine.h"
+#include "core/events/window_event.h"
 
 namespace engine {
 	const int Window::min_width = 640;
 	const int Window::min_height = 360;
 
-	Window::Window(const std::string title)
-		: _title(title), _fullscreen(false), _width(0), _height(0), _ptr(nullptr), _vsync(false) { }
+	Window::Window(const std::string title) {
+		_data.title = title;
+	}
 
 	Window::~Window() {
 		glfwSetWindowSizeCallback(_ptr, nullptr);
@@ -16,68 +18,88 @@ namespace engine {
 		glfwTerminate();
 	}
 
-	int Window::init() {
-		if (glfwInit() == GLFW_FALSE)
-			return -1;
+	void Window::init() {
+		int sucess = glfwInit();
+		EN_ASSERT(sucess, "Can't initialize GLFW.");
 
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 
 		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 		const GLFWvidmode* vidmode = glfwGetVideoMode(monitor);
 
-		if (_width == 0)
-			_width = vidmode->width;
-		if (_height == 0)
-			_height = vidmode->height;
+		if (_data.width <= 0)
+			_data.width = vidmode->width;
+		if (_data.height <= 0)
+			_data.height = vidmode->height;
 
-		_ptr = glfwCreateWindow(_width, _height, _title.c_str(), NULL, NULL);
-
-		if (_fullscreen)
-			glfwSetWindowMonitor(_ptr, monitor, 0, 0, vidmode->width, vidmode->height, vidmode->refreshRate);
+		_ptr = glfwCreateWindow(_data.width, _data.height, _data.title.c_str(), nullptr, nullptr);
 
 		if (!_ptr) {
 			glfwTerminate();
-			return -1;
+			EN_ASSERT(false, "Can't create GLFW window.");
 		}
 
+		glfwGetWindowPos(_ptr, nullptr, &start_y);
+
+		if (_data.fullscreen)
+			glfwSetWindowMonitor(_ptr, monitor, 0, 0, vidmode->width, vidmode->height, vidmode->refreshRate);
+
+		glfwSetWindowUserPointer(_ptr, &_data);
 		glfwSetWindowSizeLimits(_ptr, Window::min_width, Window::min_height, GLFW_DONT_CARE, GLFW_DONT_CARE);
 
 		glfwSetWindowSizeCallback(_ptr, [](GLFWwindow* window, int width, int height) {
-			Engine::get_instance()->get_window().window_resized(window, width, height);
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+		data.width = width;
+		data.height = height;
+
+		data.minimized = width <= 0 && height <= 0;
+
+		WindowResizeEvent event(width, height);
+		data.event_callback(event);
+			});
+
+		glfwSetWindowCloseCallback(_ptr, [](GLFWwindow* window) {
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+		WindowCloseEvent event;
+		data.event_callback(event);
 			});
 
 		glfwMakeContextCurrent(_ptr);
 
-		glfwSwapInterval(_vsync);
-
-		return 0;
+		glfwSwapInterval(_data.vsync);
 	}
 
 	void Window::set_width(int width) {
-		_width = width;
+		_data.width = width;
 		if (_ptr)
-			glfwSetWindowSize(_ptr, _width, _height);
+			glfwSetWindowSize(_ptr, width, _data.height);
 	}
 
 	void Window::set_height(int height) {
-		_height = height;
+		_data.height = height;
 		if (_ptr)
-			glfwSetWindowSize(_ptr, _width, _height);
+			glfwSetWindowSize(_ptr, _data.width, height);
 	}
 
 	void Window::set_fullscreen(bool fullscreen) {
-		_fullscreen = fullscreen;
-
 		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 		const GLFWvidmode* vidmode = glfwGetVideoMode(monitor);
 
-		glfwSetWindowMonitor(_ptr, _fullscreen ? monitor : NULL, 0, 0, vidmode->width, vidmode->height, vidmode->refreshRate);
+		glfwSetWindowMonitor(_ptr, fullscreen ? monitor : NULL, 0, 0, vidmode->width, vidmode->height, vidmode->refreshRate);
+		_data.fullscreen = fullscreen;
+
+		glfwSetWindowPos(_ptr, 0, start_y);
+
+		int posx, posy;
+		glfwGetWindowPos(_ptr, &posx, &posy);
+		EN_LOG_INFO("At ({}, {})", posx, posy);
 	}
 
 	void Window::set_vsync(bool enabled) {
-		_vsync = enabled;
+		_data.vsync = enabled;
 		if (_ptr)
 			glfwSwapInterval(enabled);
 	}
@@ -92,14 +114,5 @@ namespace engine {
 
 	bool Window::should_close() {
 		return glfwWindowShouldClose(_ptr);
-	}
-
-	void Window::window_resized(GLFWwindow* window, int width, int height) {
-		_width = width;
-		_height = height;
-
-#if ENGINE_PLAYER
-		Engine::get_instance()->get_viewport().resize(width, height);
-#endif
 	}
 }
