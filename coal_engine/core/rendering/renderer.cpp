@@ -57,10 +57,7 @@ namespace engine {
         if (_data.max_texture_slots > 32) // 32 is the maximum glsl array size
             _data.max_texture_slots = 32;
 
-        _data.texture_slots.reserve(_data.max_texture_slots);
-        for (int i = 0; i < _data.max_texture_slots; i++) {
-            _data.texture_slots.push_back(nullptr);
-        }
+        _data.texture_slots.resize(_data.max_texture_slots);
 
         _data.quad_vertex_array = create_ref<VertexArray>();
 
@@ -96,9 +93,9 @@ namespace engine {
         _data.white_texture = Texture::GenFlatTexture(1, 1, 0xffffffff);
 
         std::vector<int> samplers;
-        samplers.reserve(_data.max_texture_slots * sizeof(int));
+        samplers.resize(_data.max_texture_slots * sizeof(int));
         for (unsigned int i = 0; i < _data.max_texture_slots; i++)
-            samplers.push_back(i);
+            samplers[i] = i;
 
         _data.quad_shader = AssetDatabase::load_shader("res/shaders/quad.glsl");
         _data.quad_shader->bind();
