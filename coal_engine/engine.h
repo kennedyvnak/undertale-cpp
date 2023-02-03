@@ -5,6 +5,7 @@
 #include "core/base.h"
 #include "core/events/engine_event.h"
 #include "core/events/window_event.h"
+#include "core/events/key_event.h"
 #include "core/rendering/layers/layer_stack.h"
 #include "core/rendering/window.h"
 #include "core/rendering/viewport.h"
@@ -87,6 +88,7 @@ namespace engine {
         float _frame_count;
 
         bool on_window_close(WindowCloseEvent& event);
+        bool on_key_pressed(KeyPressedEvent& event);
 
         void calculate_fps();
     };

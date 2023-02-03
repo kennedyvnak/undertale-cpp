@@ -10,8 +10,8 @@ namespace engine {
         None = 0,
         Event_WindowClose, Event_WindowResize, Event_WindowFocus,
         Event_EngineTick, Event_EngineUpdate, Event_EngineRender, Event_EngineResizeViewport,
-        Event_KeyPressed, Event_KeyRelease, Event_KeyTyped,
-        Event_MouseButtonPressed, Event_MouseButtonRelease, Event_MouseMoved, Event_MouseScrolled
+        Event_KeyPressed, Event_KeyReleased, Event_KeyTyped,
+        Event_MouseButtonPressed, Event_MouseButtonReleased, Event_MouseMoved, Event_MouseScrolled
     };
 
 #define ENGINE_EVENT_TYPE(type) static EventType get_static_type() { return EventType::type; }\

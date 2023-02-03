@@ -1,6 +1,6 @@
 #if ENGINE_PLAYER
 #include "player_layer.h"
-#include "core/event/window_event.h"
+#include "core/events/window_event.h"
 
 namespace engine::player {
     PlayerLayer::PlayerLayer(const std::string& name)

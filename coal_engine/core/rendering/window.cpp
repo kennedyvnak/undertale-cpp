@@ -2,6 +2,8 @@
 #include "window.h"
 #include "engine.h"
 #include "core/events/window_event.h"
+#include "core/events/key_event.h"
+#include "core/events/mouse_event.h"
 
 namespace engine {
 	const int Window::min_width = 640;
@@ -67,6 +69,69 @@ namespace engine {
 		data.event_callback(event);
 			});
 
+		glfwSetKeyCallback(_ptr, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+		switch (action) {
+		case GLFW_PRESS:
+		{
+			KeyPressedEvent event(key, 0);
+			data.event_callback(event);
+			break;
+		}
+		case GLFW_RELEASE:
+		{
+			KeyReleasedEvent event(key);
+			data.event_callback(event);
+			break;
+		}
+		case GLFW_REPEAT:
+		{
+			KeyPressedEvent event(key, true);
+			data.event_callback(event);
+			break;
+		}
+		}});
+
+		glfwSetCharCallback(_ptr, [](GLFWwindow* window, unsigned int keycode) {
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+		KeyTypedEvent event(keycode);
+		data.event_callback(event);
+			});
+
+		glfwSetMouseButtonCallback(_ptr, [](GLFWwindow* window, int button, int action, int mods) {
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+		switch (action) {
+		case GLFW_PRESS:
+		{
+			MouseButtonPressedEvent event(button);
+			data.event_callback(event);
+			break;
+		}
+		case GLFW_RELEASE:
+		{
+			MouseButtonReleasedEvent event(button);
+			data.event_callback(event);
+			break;
+		}
+		}});
+
+		glfwSetScrollCallback(_ptr, [](GLFWwindow* window, double x_offset, double y_offset) {
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+		MouseScrolledEvent event((float)x_offset, (float)y_offset);
+		data.event_callback(event);
+			});
+
+		glfwSetCursorPosCallback(_ptr, [](GLFWwindow* window, double pos_x, double pos_y) {
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+		MouseMovedEvent event((float)pos_x, (float)pos_y);
+		data.event_callback(event);
+			});
+
 		glfwMakeContextCurrent(_ptr);
 
 		glfwSwapInterval(_data.vsync);
@@ -92,10 +157,6 @@ namespace engine {
 		_data.fullscreen = fullscreen;
 
 		glfwSetWindowPos(_ptr, 0, start_y);
-
-		int posx, posy;
-		glfwGetWindowPos(_ptr, &posx, &posy);
-		EN_LOG_INFO("At ({}, {})", posx, posy);
 	}
 
 	void Window::set_vsync(bool enabled) {

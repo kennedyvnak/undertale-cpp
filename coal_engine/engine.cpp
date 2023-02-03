@@ -11,8 +11,6 @@
 #include "entities/rendering/texture_renderer.h"
 #include "core/events/window_event.h"
 
-// TODO: Create a event system to handle input etc
-
 namespace engine {
 	Engine* Engine::_instance;
 	const double EngineMetrics::frame_check_interval = 1.0 / 30.0;
@@ -110,6 +108,7 @@ namespace engine {
 	void Engine::on_event(Event& event) {
 		EventDispatcher dispatcher(event);
 		dispatcher.dispatch<WindowCloseEvent>(EN_BIND_EVENT_FUNC(Engine::on_window_close));
+		dispatcher.dispatch<KeyPressedEvent>(EN_BIND_EVENT_FUNC(Engine::on_key_pressed));
 
 		for (auto layer = _layer_stack.rbegin(); layer != _layer_stack.rend(); layer++) {
 			if (event.handled)
@@ -144,6 +143,16 @@ namespace engine {
 	bool Engine::on_window_close(WindowCloseEvent& event) {
 		_running = false;
 		return true;
+	}
+
+	bool Engine::on_key_pressed(KeyPressedEvent& event) {
+		if (event.is_repeat())
+			return false;
+		if (event.get_code() == key::F11) {
+			_window->set_fullscreen(!_window->get_fullscreen());
+			return true;
+		}
+		return false;
 	}
 
 	void Engine::calculate_fps() {
