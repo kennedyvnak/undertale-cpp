@@ -68,8 +68,9 @@ namespace engine::editor {
         ImGui::Begin("Metrics");
         auto metrics = Engine::get_instance()->get_metrics();
         auto rendering_statistics = Renderer::get_stats();
-        ImGui::Text(engine::format("FPS: {}", metrics.fps_as_double).c_str());
-        ImGui::Text(engine::format("ms: {}", metrics.ms_as_double).c_str());
+        ImGui::Text(engine::format("FPS: {}", metrics.fps).c_str());
+        ImGui::Text(engine::format("ms: {}", metrics.ms).c_str());
+        ImGui::Text(engine::format("Delta Time: {}", Time::get_delta_time()).c_str());
         ImGui::Text(engine::format("Frame count: {}", metrics.total_frame_count).c_str());
         ImGui::Text(engine::format("Quad Count: {}", rendering_statistics.quad_count).c_str());
         ImGui::Text(engine::format("Draw Calls: {}", rendering_statistics.draw_calls).c_str());

@@ -7,13 +7,12 @@
 #include "core/rendering/rendering_api.h"
 #include "core/rendering/renderer.h"
 #include "core/rendering/layers/layer.h"
-#include "core/os/time.h"
 #include "entities/rendering/texture_renderer.h"
 #include "core/events/window_event.h"
 
 namespace engine {
 	Engine* Engine::_instance;
-	const double EngineMetrics::frame_check_interval = 1.0 / 30.0;
+	const TimeValue EngineMetrics::frame_check_interval = 1.0_t / 30.0_t;
 
 	Engine::Engine(const EngineSpecification& specification)
 		: _specs(specification) {
@@ -66,7 +65,8 @@ namespace engine {
 		RenderingAPI::set_clear_color(glm::vec4(0.07f, 0.13f, 0.17f, 1.0f));
 
 		while (_running) {
-			calculate_fps();
+			time_calculations();
+
 			if (!_paused) {
 				Renderer::reset_statistics();
 
@@ -155,14 +155,15 @@ namespace engine {
 		return false;
 	}
 
-	void Engine::calculate_fps() {
-		double current_time = Time::get_time_since_startup_as_double();
-		double time_diff = current_time - _fps_previous_time;
+	void Engine::time_calculations() {
+		TimeValue current_time = Time::get_time_since_startup();
+		Time::set_delta_time(&_last_frame_time);
+		TimeValue time_diff = current_time - _fps_previous_time;
 		_frame_count++;
 		_metrics.total_frame_count++;
 		if (time_diff >= EngineMetrics::frame_check_interval) {
-			_metrics.fps = _metrics.fps_as_double = 1.0 / time_diff * _frame_count;
-			_metrics.ms = _metrics.ms_as_double = time_diff / _frame_count * 1000.0;
+			_metrics.fps = _metrics.fps = 1.0_t / time_diff * _frame_count;
+			_metrics.ms = _metrics.ms = time_diff / _frame_count * 1000.0_t;
 			_fps_previous_time = current_time;
 			_frame_count = 0;
 		}

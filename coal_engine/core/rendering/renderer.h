@@ -18,7 +18,7 @@ namespace engine {
         static void draw_quad(const Transform& transform);
         static void draw_quad(const Transform& transform, Ref<Texture> texture);
         static void draw_quad(const Transform& transform, glm::vec4 color);
-        static void draw_quad(const Transform& transform, Ref<Texture> texture, glm::vec4 color);
+        static void draw_quad(const Transform& transform, Ref<Texture> texture, glm::vec4 color, float time_offset = 0.0f, float time_speed = 1.0f);
 
         struct Statistics {
             unsigned int draw_calls = 0;

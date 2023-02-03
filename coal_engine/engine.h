@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "core/base.h"
+#include "core/os/time.h"
 #include "core/events/engine_event.h"
 #include "core/events/window_event.h"
 #include "core/events/key_event.h"
@@ -35,11 +36,9 @@ namespace engine {
     };
 
     struct EngineMetrics {
-        static const double frame_check_interval;
-        float fps = 0.0f;
-        float ms = 0.0f;
-        double fps_as_double = 0.0;
-        double ms_as_double = 0.0;
+        static const TimeValue frame_check_interval;
+        TimeValue fps = 0.0_t;
+        TimeValue ms = 0.0_t;
         unsigned long long int total_frame_count = 0;
     };
 
@@ -84,13 +83,14 @@ namespace engine {
 #endif // DISABLE_IMGUI
         std::vector<Scope<entities::TextureRenderer>> _texture_renderers;
 
-        float _fps_previous_time;
-        float _frame_count;
+        TimeValue _last_frame_time;
+        TimeValue _fps_previous_time;
+        int _frame_count;
 
         bool on_window_close(WindowCloseEvent& event);
         bool on_key_pressed(KeyPressedEvent& event);
 
-        void calculate_fps();
+        void time_calculations();
     };
 
     extern Engine* create_engine(EngineCommandLineArgs args);

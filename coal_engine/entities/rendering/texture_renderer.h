@@ -32,6 +32,8 @@ namespace engine {
 			Ref<Texture> _texture;
 			Transform _transform;
 			glm::vec4 _color;
+			float _time_offset;
+			float _time_speed;
 		};
 	}
 }

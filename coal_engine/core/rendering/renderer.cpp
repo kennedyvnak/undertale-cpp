@@ -8,6 +8,7 @@
 #include "shader.h"
 #include "uniform_buffer.h"
 #include "core/assets/asset_database.h"
+#include "core/os/time.h"
 
 namespace engine {
     struct QuadVertex {
@@ -15,6 +16,8 @@ namespace engine {
         glm::vec4 color;
         glm::vec2 tex_coord;
         int tex_index;
+        float time_offset;
+        float time_speed;
     };
 
     struct RendererData {
@@ -47,6 +50,12 @@ namespace engine {
         };
         CameraData camera_data;
         Ref<UniformBuffer> camera_uniform_buffer;
+        struct TimeData {
+            TimeValue time;
+            TimeValue delta_time;
+        };
+        TimeData time_data;
+        Ref<UniformBuffer> time_uniform_buffer;
     };
 
     int RendererData::max_texture_slots;
@@ -67,6 +76,8 @@ namespace engine {
             { UniformType::Vec4, "a_Color" },
             { UniformType::Vec2, "a_TexCoord" },
             { UniformType::Int, "a_TexIndex" },
+            { UniformType::Float, "a_TimeOffset" },
+            { UniformType::Float, "a_TimeSpeed" },
             });
         _data.quad_vertex_array->add_vertex_buffer(_data.quad_vertex_buffer);
 
@@ -104,6 +115,8 @@ namespace engine {
         _data.texture_slots[0] = _data.white_texture;
 
         _data.camera_uniform_buffer = create_ref<UniformBuffer>(static_cast<unsigned int>(sizeof(RendererData::CameraData)), 0);
+
+        _data.time_uniform_buffer = create_ref<UniformBuffer>(static_cast<unsigned int>(sizeof(RendererData::TimeData)), 1);
     }
 
     void Renderer::finalize() {
@@ -113,6 +126,10 @@ namespace engine {
     void Renderer::begin_scene(const Ref<Camera>& camera) {
         _data.camera_data.view_projection = camera->get_view_projection();
         _data.camera_uniform_buffer->set_data(&_data.camera_data, sizeof(RendererData::CameraData));
+
+        _data.time_data.time = Time::get_time();
+        _data.time_data.delta_time = Time::get_delta_time();
+        _data.time_uniform_buffer->set_data(&_data.time_data, sizeof(RendererData::TimeData));
 
         start_batch();
     }
@@ -160,7 +177,7 @@ namespace engine {
         draw_quad(transform, _data.white_texture, color);
     }
 
-    void Renderer::draw_quad(const Transform& transform, Ref<Texture> texture, glm::vec4 color) {
+    void Renderer::draw_quad(const Transform& transform, Ref<Texture> texture, glm::vec4 color, float time_offset, float time_speed) {
         constexpr unsigned int quad_vertex_count = 4;
         constexpr glm::vec2 texture_coords[] = { {0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f} };
 
@@ -194,6 +211,8 @@ namespace engine {
             _data.quad_vertex_buffer_ptr->color = color;
             _data.quad_vertex_buffer_ptr->tex_coord = texture_coords[i];
             _data.quad_vertex_buffer_ptr->tex_index = texture_index;
+            _data.quad_vertex_buffer_ptr->time_offset = time_offset;
+            _data.quad_vertex_buffer_ptr->time_speed = time_speed;
             _data.quad_vertex_buffer_ptr++;
         }
 
