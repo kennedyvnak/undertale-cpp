@@ -87,7 +87,7 @@ namespace engine::editor {
         ImGui::Checkbox("V-Sync", &vsync);
         ImGui::End();
 
-        if (width != game_viewport.get_width() || width != game_viewport.get_height())
+        if (width != game_viewport.get_width() || height != game_viewport.get_height())
             Engine::get_instance()->resize_viewport(width, height);
         if (fullscreen != window.get_fullscreen())
             window.set_fullscreen(fullscreen);
