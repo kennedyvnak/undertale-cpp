@@ -1,5 +1,6 @@
 #pragma once
 
+#include "core/base.h"
 #include <glm/glm.hpp>
 #include "core/components/transform.h"
 
@@ -8,6 +9,9 @@ namespace engine {
 	public:
 		Camera();
 		Camera(float aspect_ratio);
+
+		static Ref<Camera> get_scene_camera() { return _scene_camera.lock(); }
+		static void set_scene_camera(Ref<Camera> cam) { _scene_camera = cam; }
 
 		inline float get_near() const { return _near; }
 		void set_near(float near) { _near = near; recalculate_projection(); }
@@ -31,6 +35,8 @@ namespace engine {
 		void set_rotation(float rotation);
 		void set_scale(glm::vec2 scale);
 	private:
+		static std::weak_ptr<Camera> _scene_camera;
+
 		float _near;
 		float _far;
 		float _aspect_ratio;

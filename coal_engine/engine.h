@@ -11,8 +11,6 @@
 #include "core/rendering/window.h"
 #include "core/rendering/viewport.h"
 #include "core/rendering/framebuffer.h"
-#include "core/rendering/camera.h"
-#include "entities/rendering/texture_renderer.h"
 #ifndef DISABLE_IMGUI
 #include "imgui/imgui_layer.h"
 #endif
@@ -64,7 +62,6 @@ namespace engine {
         inline Window& get_window() const { return *_window; }
         inline Viewport& get_viewport() const { return *_viewport; }
         inline Framebuffer& get_framebuffer() const { return _viewport->get_framebuffer(); }
-        inline Ref<Camera> get_camera() const { return _camera; }
     private:
         static Engine* _instance;
         bool _running = true;
@@ -75,13 +72,11 @@ namespace engine {
 
         Scope<Window> _window;
         Scope<Viewport> _viewport;
-        Ref<Camera> _camera;
 
         LayerStack _layer_stack;
 #ifndef DISABLE_IMGUI
         imgui::ImGuiLayer* _imgui_layer;
 #endif // DISABLE_IMGUI
-        std::vector<Scope<entities::TextureRenderer>> _texture_renderers;
 
         TimeValue _last_frame_time;
         TimeValue _fps_previous_time;

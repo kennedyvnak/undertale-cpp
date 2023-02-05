@@ -1,11 +1,18 @@
 #include "editor_layer.h"
 #include "log_window.h"
 #include <imgui.h>
+#include "core/scenes/scene_layer.h"
 
 namespace engine::editor {
     EditorLayer::EditorLayer()
         : Layer("editor_layer") {
         _game_view_window = create_scope<GameViewWindow>();
+    }
+
+    void EditorLayer::on_attach() {
+        Viewport& game_viewport = Engine::get_instance()->get_viewport();
+        _width = game_viewport.get_width();
+        _height = game_viewport.get_height();
     }
 
     void EditorLayer::on_imgui_render() {
@@ -76,20 +83,25 @@ namespace engine::editor {
         ImGui::Text(engine::format("Draw Calls: {}", rendering_statistics.draw_calls).c_str());
         ImGui::End();
 
-        int width = game_viewport.get_width();
-        int height = game_viewport.get_height();
         bool fullscreen = window.get_fullscreen();
         bool vsync = window.get_vsync();
 
         ImGui::Begin("Settings");
-        ImGui::SliderInt("Width", &width, Window::min_width, 3840);
-        ImGui::SliderInt("Heght", &height, Window::min_height, 2160);
+        ImGui::SliderInt("Width", &_width, Window::min_width, 3840);
+        ImGui::SliderInt("Heght", &_height, Window::min_height, 2160);
         ImGui::Checkbox("Fullscreen", &fullscreen);
         ImGui::Checkbox("V-Sync", &vsync);
+
+        if (game_viewport.get_width() != _width || game_viewport.get_height() != _height) {
+            if (ImGui::Button("Resize framebuffer")) {
+                Engine::get_instance()->resize_viewport(_width, _height);
+            }
+        }
+        ImGui::Separator();
+        ImGui::Spacing();
+
         ImGui::End();
 
-        if (width != game_viewport.get_width() || height != game_viewport.get_height())
-            Engine::get_instance()->resize_viewport(width, height);
         if (fullscreen != window.get_fullscreen())
             window.set_fullscreen(fullscreen);
         if (vsync != window.get_vsync())

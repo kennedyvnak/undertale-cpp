@@ -11,11 +11,11 @@ namespace engine {
         return rand();
     }
 
-    float Random::random_range(float min, float max) {
-        return min + static_cast<float>(randi()) / (static_cast<float>(RAND_MAX / (max - min)));
-    }
-
     float Random::randf() {
         return (float)randi() / RAND_MAX;
+    }
+
+    float Random::range(float min, float max) {
+        return min + static_cast<float>(randi()) / (static_cast<float>(RAND_MAX / (max - min)));
     }
 }

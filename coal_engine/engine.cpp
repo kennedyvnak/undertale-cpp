@@ -9,6 +9,8 @@
 #include "core/rendering/layers/layer.h"
 #include "entities/rendering/texture_renderer.h"
 #include "core/events/window_event.h"
+#include "core/scenes/scene_layer.h"
+#include "core/rendering/camera.h"
 
 namespace engine {
 	Engine* Engine::_instance;
@@ -35,6 +37,7 @@ namespace engine {
 		_imgui_layer = new imgui::ImGuiLayer();
 		push_overlay(_imgui_layer);
 #endif
+		push_layer(new SceneLayer());
 	}
 
 	Engine::~Engine() {
@@ -42,30 +45,13 @@ namespace engine {
 	}
 
 	void Engine::run() {
-		_camera = create_ref<Camera>();
-		_camera->set_aspect_ratio((float)_viewport->get_width() / (float)_viewport->get_height());
-
-		Ref<Texture> heart_texture = AssetDatabase::load_texture("res/textures/heart.png");
-		Ref<Texture> square_texture = AssetDatabase::load_texture("res/textures/square.png");
-		Ref<Texture> circle_texture = AssetDatabase::load_texture("res/textures/circle.png");
-		Ref<Texture> triangle_texture = AssetDatabase::load_texture("res/textures/triangle.png");
-		Ref<Texture> star_texture = AssetDatabase::load_texture("res/textures/star.png");
-
-		Ref<Texture> textures[] = { heart_texture, square_texture, circle_texture, triangle_texture, star_texture };
-
-		for (float y = -7.75f; y < 8.25f; y += 0.5f) {
-			for (float x = -7.75f; x < 8.25f; x += 0.5f) {
-				glm::vec4 color = { (x + 8.0f) / 16.0f, 0.4f, (y + 4.5f) / 9.0f, 0.65f };
-				_texture_renderers.push_back(create_scope<entities::TextureRenderer>(
-					textures[rand() % 5],
-					Transform(glm::vec2(x, y), sinf(rand()) * 360.0f, glm::vec2(0.45f)), color));
-			}
-		}
-
 		RenderingAPI::set_clear_color(glm::vec4(0.07f, 0.13f, 0.17f, 1.0f));
 
 		while (_running) {
 			time_calculations();
+
+			for (Layer* layer : _layer_stack)
+				layer->on_update();
 
 			if (!_paused) {
 				Renderer::reset_statistics();
@@ -73,18 +59,13 @@ namespace engine {
 				_viewport->get_framebuffer().bind();
 				RenderingAPI::clear();
 
-				Renderer::begin_scene(_camera);
+				Renderer::begin_scene(Camera::get_scene_camera());
 
 				for (Layer* layer : _layer_stack)
-					layer->on_update();
+					layer->render();
 
-				for (auto& tex_render : _texture_renderers) {
-					tex_render->draw();
-				}
-				Renderer::draw_quad(Transform(glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(1.0f, 1.0f)));
 
 				Renderer::end_scene();
-
 				_viewport->get_framebuffer().unbind();
 
 #ifndef DISABLE_IMGUI
@@ -132,7 +113,6 @@ namespace engine {
 			_paused = true;
 		} else {
 			_viewport->resize(width, height);
-			_camera->set_aspect_ratio((float)width / (float)height);
 			_paused = false;
 		}
 

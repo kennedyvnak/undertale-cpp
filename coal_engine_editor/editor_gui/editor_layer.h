@@ -9,8 +9,10 @@ namespace engine::editor {
         EditorLayer();
         ~EditorLayer() = default;
 
+        virtual void on_attach() override;
         virtual void on_imgui_render() override;
     private:
         Scope<GameViewWindow> _game_view_window;
+        int _width, _height;
     };
 }

@@ -10,12 +10,10 @@ namespace engine {
 	namespace entities {
 		class TextureRenderer {
 		public:
-			TextureRenderer();
-			TextureRenderer(Ref<Texture> texture);
-			TextureRenderer(Ref<Texture> texture, const Transform& _transform);
-			TextureRenderer(Ref<Texture> texture, const Transform& _transform, glm::vec4 color);
+			TextureRenderer(Ref<Texture> texture = nullptr, const Transform& transform = Transform(), glm::vec4 color = glm::vec4(1.0f));
 			~TextureRenderer();
 
+			void update();
 			void draw();
 
 			inline Ref<Texture> get_texture() const { return _texture; }
@@ -34,6 +32,7 @@ namespace engine {
 			glm::vec4 _color;
 			float _time_offset;
 			float _time_speed;
+			float _rotation_speed;
 		};
 	}
 }

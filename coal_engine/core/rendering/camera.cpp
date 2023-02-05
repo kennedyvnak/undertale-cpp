@@ -3,8 +3,16 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace engine {
+	std::weak_ptr<Camera> Camera::_scene_camera;
+
 	Camera::Camera()
 		: _transform(), _near(-1.0f), _far(1.0f), _aspect_ratio(16.0f / 9.0f), _size(5.0f) {
+		recalculate_projection();
+		recalculate_matrix();
+	}
+
+	Camera::Camera(float aspect_ratio)
+		: _transform(), _near(-1.0f), _far(1.0f), _aspect_ratio(aspect_ratio), _size(5.0f) {
 		recalculate_projection();
 		recalculate_matrix();
 	}
