@@ -1,6 +1,7 @@
 #include "enpch.h"
 #include "transform.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include "core/math/math.h"
 
 namespace engine {
 	void Transform::recalculate_matrix() {
@@ -25,6 +26,11 @@ namespace engine {
 		_position = position;
 		_rotation = rotation;
 		_scale = scale;
+		recalculate_matrix();
+	}
+
+	void Transform::set_rotation(float rotation) {
+		_rotation = Math::normalize(rotation, 0.0f, 360.0f);
 		recalculate_matrix();
 	}
 }

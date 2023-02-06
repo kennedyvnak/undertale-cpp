@@ -4,14 +4,6 @@
 
 namespace engine {
 	class Transform {
-	private:
-		glm::vec2 _position;
-		float _rotation;
-		glm::vec2 _scale;
-		glm::mat4 _matrix;
-
-		void recalculate_matrix();
-
 	public:
 		Transform();
 		Transform(glm::vec2 position, float rotation, glm::vec2 scale);
@@ -22,11 +14,18 @@ namespace engine {
 		void set_position(glm::vec2 position) { _position = position; recalculate_matrix(); }
 
 		inline const float get_rotation() const& { return _rotation; }
-		void set_rotation(float rotation) { _rotation = rotation; recalculate_matrix(); }
+		void set_rotation(float rotation);
 
 		inline const glm::vec2 get_scale() const& { return _scale; }
 		void set_scale(glm::vec2 scale) { _scale = scale; recalculate_matrix(); }
 
 		inline const glm::mat4 get_matrix() const& { return _matrix; }
+	private:
+		glm::vec2 _position;
+		float _rotation; // This value will be clamp to be between { 0, 360 } 
+		glm::vec2 _scale;
+		glm::mat4 _matrix;
+
+		void recalculate_matrix();
 	};
 }

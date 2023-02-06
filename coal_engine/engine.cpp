@@ -64,7 +64,6 @@ namespace engine {
 				for (Layer* layer : _layer_stack)
 					layer->render();
 
-
 				Renderer::end_scene();
 				_viewport->get_framebuffer().unbind();
 

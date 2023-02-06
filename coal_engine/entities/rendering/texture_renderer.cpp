@@ -13,16 +13,8 @@ namespace engine::entities {
 
 	TextureRenderer::~TextureRenderer() { }
 
-	static float normalize(const float value, const float start, const float end) {
-		const float width = end - start;   // 
-		const float offset_value = value - start;   // value relative to 0
-
-		return (offset_value - (floor(offset_value / width) * width)) + start;
-		// + start to reset back to start of original range
-	}
-
 	void TextureRenderer::update() {
-		set_rotation(normalize(_transform.get_rotation() + Time::get_delta_time() * _rotation_speed, 0.0f, 360.0f));
+		set_rotation(_transform.get_rotation() + Time::get_delta_time() * _rotation_speed);
 	}
 
 	void TextureRenderer::draw() {
